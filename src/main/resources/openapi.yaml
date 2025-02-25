@@ -1,0 +1,184 @@
+openapi: 3.0.3
+info:
+  title: Submersible Probe Control API
+  description: API for controlling a remotely operated submersible probe, including command execution, grid initialization, state management, and auditing.
+  version: 1.0.0
+servers:
+  - url: https://api.probecontrol.com
+    description: Production server
+  - url: http://localhost:8080
+    description: Development server
+
+paths:
+  /probe/init:
+    post:
+      summary: Initialize the grid and probe position
+      description: Initialize the grid dimensions, obstacles, and the initial position and direction of the probe.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gridSize:
+                  type: object
+                  required: [width, height]
+                  properties:
+                    width:
+                      type: integer
+                      description: The width of the grid.
+                      example: 5
+                    height:
+                      type: integer
+                      description: The height of the grid.
+                      example: 5
+                obstacles:
+                  type: array
+                  description: A list of obstacles, each defined by its coordinates.
+                  items:
+                    type: object
+                    properties:
+                      x:
+                        type: integer
+                        description: X-coordinate of the obstacle.
+                        example: 2
+                      y:
+                        type: integer
+                        description: Y-coordinate of the obstacle.
+                        example: 2
+                initialPosition:
+                  type: object
+                  required: [x, y, direction]
+                  properties:
+                    x:
+                      type: integer
+                      description: Initial X-coordinate of the probe.
+                      example: 0
+                    y:
+                      type: integer
+                      description: Initial Y-coordinate of the probe.
+                      example: 0
+                    direction:
+                      type: string
+                      enum: [North, East, South, West]
+                      description: Initial direction the probe is facing.
+                      example: North
+      responses:
+        '201':
+          description: Grid and probe initialized successfully.
+        '400':
+          description: Invalid input for grid, obstacles, or probe position.
+
+  /probe/status:
+    get:
+      summary: Get the status of the probe
+      description: Retrieve the current status, position, and direction of the probe.
+      responses:
+        '200':
+          description: Successfully retrieved probe status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProbeState'
+
+  /probe/command:
+    post:
+      summary: Send command to the probe
+      description: Send a movement or control command to the probe.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                command:
+                  type: string
+                  description: Command to execute, e.g., "F", "L", "R", "B", or a sequence.
+                  example: "FFLB"
+      responses:
+        '200':
+          description: Command executed successfully, returning updated probe state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProbeState'
+        '400':
+          description: Invalid command or command failed.
+
+  /probe/audit:
+    get:
+      summary: Get audit logs
+      description: Retrieve a list of audit logs containing user actions and timestamped commands.
+      responses:
+        '200':
+          description: Successfully retrieved audit logs.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    user:
+                      type: string
+                      description: The user who issued the command.
+                    command:
+                      type: string
+                      description: The command that was issued.
+                    timestamp:
+                      type: string
+                      format: date-time
+                      description: The time the command was issued.
+                    result:
+                      type: string
+                      description: Result of the action.
+
+components:
+  schemas:
+    ProbeState:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the probe.
+        status:
+          type: string
+          enum: [Idle, Moving, Error]
+        battery:
+          type: number
+          format: float
+          description: Current battery percentage.
+        location:
+          type: object
+          properties:
+            x:
+              type: integer
+              description: X-coordinate of the probe.
+            y:
+              type: integer
+              description: Y-coordinate of the probe.
+        direction:
+          type: string
+          enum: [North, East, South, West]
+        visitedCoordinates:
+          type: array
+          items:
+            type: object
+            properties:
+              x:
+                type: integer
+              y:
+                type: integer
+      example:
+        id: "probe-123"
+        status: "Idle"
+        battery: 85.5
+        location:
+          x: 0
+          y: 0
+        direction: "North"
+        visitedCoordinates:
+          - x: 0
+            y: 0
