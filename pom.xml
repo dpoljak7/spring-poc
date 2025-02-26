@@ -29,6 +29,7 @@
     <properties>
         <java.version>17</java.version>
         <jacoco.agent.argLine>-javaagent:${project.build.directory}/jacoco-agent.jar=destfile=${project.build.directory}/jacoco.exec</jacoco.agent.argLine>
+        <cucumber.version>7.14.1</cucumber.version>
     </properties>
     <dependencies>
         <dependency>
@@ -100,11 +101,17 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
-            <version>7.11.2</version>
+            <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -112,15 +119,27 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-spring</artifactId>
-            <version>7.11.2</version>
+            <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>
 
         <!-- Cucumber JUnit -->
         <dependency>
             <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit</artifactId>
-            <version>7.11.2</version>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <version>1.10.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.14.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -157,13 +176,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <!--  required to find Cucumber runner-->
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>5.11.1</version>
-            <scope>test</scope>
-        </dependency>
+
     </dependencies>
 
     <build>
@@ -240,59 +253,74 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version> <!-- Use the latest version -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+                <configuration>
+                    <!--                    <argLine>${jacoco.agent.argLine}</argLine>-->
+                    <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/CucumberRunner.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.1.2</version>
                 <executions>
                     <execution>
+                        <id>integration-tests</id>
                         <goals>
-                            <goal>prepare-agent</goal> <!-- This prepares the code for instrumentation -->
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>verify</phase> <!-- Generate report during the verify phase -->
-                        <goals>
-                            <goal>report</goal>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <argLine>${jacoco.agent.argLine}</argLine> <!-- Activate JaCoCo agent -->
+                    <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+                    <includes>
+                        <include>**/*IT.java</include> <!-- Match your Cucumber test naming convention -->
+                        <include>**/CucumberRunner.java</include>
+                    </includes>
+                    <forkCount>1</forkCount> <!-- To avoid duplicate forks -->
+                </configuration>
             </plugin>
 <!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-surefire-plugin</artifactId>-->
-<!--                <version>3.5.2</version>-->
-<!--                <configuration>-->
-<!--                    &lt;!&ndash;                    <argLine>${jacoco.agent.argLine}</argLine>&ndash;&gt;-->
-<!--                    <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>-->
-<!--                    <includes>-->
-<!--                        <include>**/*Test.java</include>-->
-<!--                    </includes>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+<!--                <groupId>org.jacoco</groupId>-->
+<!--                <artifactId>jacoco-maven-plugin</artifactId>-->
+<!--                <version>0.8.12</version> &lt;!&ndash; Use the latest version &ndash;&gt;-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>pre-test</id>-->
+<!--                        <phase>initialize</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>prepare-agent</goal> &lt;!&ndash; This prepares the code for instrumentation &ndash;&gt;-->
+<!--                        </goals>-->
+<!--                    </execution>-->
 
-            <!--            <plugin>-->
-            <!--                <groupId>org.apache.maven.plugins</groupId>-->
-            <!--                <artifactId>maven-failsafe-plugin</artifactId>-->
-            <!--                <version>3.1.2</version>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <id>integration-tests</id>-->
-            <!--                        <goals>-->
-            <!--                            <goal>integration-test</goal>-->
-            <!--                            <goal>verify</goal>-->
-            <!--                        </goals>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--                <configuration>-->
-            <!--                    <argLine>${jacoco.agent.argLine}</argLine> &lt;!&ndash; Activate JaCoCo agent &ndash;&gt;-->
-            <!--                    <includes>-->
-            <!--                        <include>**/*IT.java</include> &lt;!&ndash; Match your Cucumber test naming convention &ndash;&gt;-->
-            <!--                    </includes>-->
-            <!--                </configuration>-->
-            <!--            </plugin>-->
+<!--                    <execution>-->
+<!--                        <id>pre-integration-test</id>-->
+<!--                        <phase>pre-integration-test</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>prepare-agent</goal> &lt;!&ndash; This prepares the code for instrumentation &ndash;&gt;-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>report</id>-->
+<!--                        <phase>post-integration-test</phase> &lt;!&ndash; Generate report during the verify phase &ndash;&gt;-->
+<!--                        <goals>-->
+<!--                            <goal>report</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
         </plugins>
     </build>
-
 </project>

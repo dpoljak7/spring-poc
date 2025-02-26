@@ -10,6 +10,6 @@ import org.springframework.test.context.ContextConfiguration;
 @SpringBootTest
 @ContextConfiguration(classes = {DemoApplication.class, TestConfig.class}) //
 @AutoConfigureMockMvc
-public class CucumberTest {
+public class CucumberConfig {
   // This class is used to hook Cucumber with Spring Boot.
 }

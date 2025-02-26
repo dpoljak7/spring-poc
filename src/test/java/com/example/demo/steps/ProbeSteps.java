@@ -4,16 +4,17 @@ package com.example.demo.steps;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import com.example.demo.db_entity.ProbeVisitedPosition;
 import com.example.demo.utils.ScenarioContext;
 import com.example.demo.utils.ScenarioKeys;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.assertj.core.api.Assertions;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.ResultActions;
+import com.example.demo.db_entity.ProbeVisitedPosition;
 
 import java.util.List;
+
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.ResultActions;
 
 public class ProbeSteps extends CommonSteps {
 

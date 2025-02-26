@@ -1,10 +1,10 @@
 package com.example.demo.steps;
 
-import static org.junit.Assert.assertTrue;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.assertj.core.api.Assertions;
 
 public class CucumberSteps {
   private boolean configWorking = false;
@@ -23,6 +23,6 @@ public class CucumberSteps {
   @Then("the test should pass")
   public void the_test_should_pass() {
     // Assert that our configuration flag is true.
-    assertTrue("Cucumber configuration is not working", configWorking);
+    Assertions.assertThat(configWorking).isTrue();
   }
 }
