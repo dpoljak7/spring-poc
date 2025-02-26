@@ -41,8 +41,13 @@ paths:
           application/json:
             schema:
               type: object
-              required: [ gridSize, obstacles, initialPosition ]
+              required: [ probeType, gridSize, obstacles, initialPosition ]
               properties:
+                probeType:
+                  type: string
+                  enum: [ ProbeFast, ProbeSlow ]
+                  description: The type of the probe being initialized.
+                  example: ProbeFast
                 gridSize:
                   type: object
                   required: [width, height]
@@ -90,6 +95,16 @@ paths:
       responses:
         '201':
           description: Grid and probe initialized successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  probeId:
+                    type: integer
+                    description: The unique identifier of the initialized probe.
+                example:
+                  probeId: 123
         '400':
           description: Invalid input for grid, obstacles, or probe position.
 
@@ -115,18 +130,18 @@ paths:
           application/json:
             schema:
               type: object
+              required: [ probeId, command ]
               properties:
+                probeId:
+                  type: integer
+                  description: The unique identifier of the initialized probe.
                 command:
                   type: string
                   description: Command to execute, e.g., "F", "L", "R", "B", or a sequence.
                   example: "FFLB"
       responses:
         '200':
-          description: Command executed successfully, returning updated probe state.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProbeState'
+          description: Command executed successfully.
         '400':
           description: Invalid command or command failed.
 
@@ -154,10 +169,10 @@ paths:
                       type: string
                       format: date-time
                       description: The time the command was issued.
-                    result:
-                      type: string
-                      description: Result of the action.
-
+                    x:
+                      type: integer
+                    y:
+                      type: integer
 components:
   schemas:
     ProbeState:
@@ -166,13 +181,6 @@ components:
         id:
           type: string
           description: Unique identifier of the probe.
-        status:
-          type: string
-          enum: [Idle, Moving, Error]
-        battery:
-          type: number
-          format: float
-          description: Current battery percentage.
         location:
           type: object
           properties:
@@ -185,23 +193,9 @@ components:
         direction:
           type: string
           enum: [North, East, South, West]
-        visitedCoordinates:
-          type: array
-          items:
-            type: object
-            properties:
-              x:
-                type: integer
-              y:
-                type: integer
       example:
         id: "probe-123"
-        status: "Idle"
-        battery: 85.5
         location:
           x: 0
           y: 0
         direction: "North"
-        visitedCoordinates:
-          - x: 0
-            y: 0

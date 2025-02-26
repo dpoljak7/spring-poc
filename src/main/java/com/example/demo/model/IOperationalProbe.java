@@ -1,6 +1,6 @@
 package com.example.demo.model;
 
-public interface IProbe {
+public interface IOperationalProbe {
 
   void turnRight();
 
@@ -10,7 +10,7 @@ public interface IProbe {
 
   Position getCurrentPosition();
 
-  Direction getDirection();
+  Direction getCurrentDirection();
 
   boolean moveForward();
 }

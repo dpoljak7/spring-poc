@@ -1,19 +1,24 @@
 package com.example.demo.model;
 
-import lombok.AllArgsConstructor;
+import com.example.demo.db_entity.Grid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-@AllArgsConstructor
 @Slf4j
-public class ProbeSimple implements IProbe {
+public class ProbeFast implements IOperationalProbe {
 
   private Grid grid;
   private Position position;
   private Direction direction;
+
+  public ProbeFast(Grid grid, Position position, Direction direction) {
+    this.grid = grid;
+    this.position = position;
+    this.direction = direction;
+  }
 
   @Override
   public Position getCurrentPosition() {
@@ -21,7 +26,7 @@ public class ProbeSimple implements IProbe {
   }
 
   @Override
-  public Direction getDirection() {
+  public Direction getCurrentDirection() {
     return direction;
   }
 

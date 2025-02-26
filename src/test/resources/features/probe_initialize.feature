@@ -22,8 +22,11 @@ Feature: Probe initialization
         "x": 0,
         "y": 0,
         "direction": "North"
-      }
+      },
+      "probeType": "ProbeFast"
     }
     """
     Then the response status code should be OK 2xx
-    And database has audit for probe "ProbeSimple" with command="INIT"
+    And extract int "probeId" property value from response into key="PROBE_ID"
+    And database has audit log for probe stored in key="PROBE_ID" with command="INIT"
+    And database has probe found by key="PROBE_ID"

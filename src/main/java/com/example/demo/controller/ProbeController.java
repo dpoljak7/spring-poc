@@ -4,9 +4,10 @@ import com.example.api.controller.V1Api;
 import com.example.api.model.ProbeState;
 import com.example.api.model.V1ProbeAuditGet200ResponseInner;
 import com.example.api.model.V1ProbeCommandPostRequest;
+import com.example.api.model.V1ProbeInitPost201Response;
 import com.example.api.model.V1ProbeInitPostRequest;
+import com.example.demo.db_entity.Grid;
 import com.example.demo.model.Direction;
-import com.example.demo.model.Grid;
 import com.example.demo.model.Position;
 import com.example.demo.service.ProbeService;
 import java.util.List;
@@ -33,19 +34,27 @@ public class ProbeController implements V1Api {
   }
 
   @Override
-  public ResponseEntity<Void> v1ProbeInitPost(V1ProbeInitPostRequest request) {
+  public ResponseEntity<V1ProbeInitPost201Response> v1ProbeInitPost(
+      V1ProbeInitPostRequest request) {
     log.info("Entering v1ProbeInitPost with request: {}", request);
-    List<Position> obstacles =
+    List<String> obstacles =
         request.getObstacles().stream()
-            .map(obstacle -> new Position(obstacle.getX(), obstacle.getY()))
+            .map(obstacle -> obstacle.getX() + "," + obstacle.getY())
             .toList();
 
     Grid grid =
-        new Grid(request.getGridSize().getWidth(), request.getGridSize().getHeight(), obstacles);
+        Grid.builder()
+            .xSize(request.getGridSize().getWidth())
+            .ySize(request.getGridSize().getHeight())
+            .obstacles(obstacles)
+            .build();
     Direction direction = Direction.valueOf(request.getInitialPosition().getDirection().name());
-    Position position = new Position(request.getInitialPosition().getX(), request.getInitialPosition().getY());
-    probeService.initialize(grid, position, direction);
-    ResponseEntity<Void> response = ResponseEntity.ok().build();
+    Position position =
+        new Position(request.getInitialPosition().getX(), request.getInitialPosition().getY());
+    int probeId = probeService.initialize(grid, position, direction);
+    V1ProbeInitPost201Response body = new V1ProbeInitPost201Response();
+    body.setProbeId(probeId);
+    ResponseEntity<V1ProbeInitPost201Response> response = ResponseEntity.ok().body(body);
     log.info(
         "v1ProbeInitPost successful with response: {}, HTTP status: {}",
         response.getBody(),
@@ -65,10 +74,13 @@ public class ProbeController implements V1Api {
   }
 
   @Override
-  public ResponseEntity<ProbeState> v1ProbeCommandPost(
+  public ResponseEntity<Void> v1ProbeCommandPost(
       V1ProbeCommandPostRequest v1ProbeCommandPostRequest) {
     log.info("Entering v1ProbeCommandPost with request: {}", v1ProbeCommandPostRequest);
-    ResponseEntity<ProbeState> response = V1Api.super.v1ProbeCommandPost(v1ProbeCommandPostRequest);
+    String command = v1ProbeCommandPostRequest.getCommand();
+    int probeId = v1ProbeCommandPostRequest.getProbeId();
+    probeService.execute(probeId, command);
+    ResponseEntity<Void> response = ResponseEntity.ok().build();
     log.info(
         "v1ProbeCommandPost successful with response: {}, HTTP status: {}",
         response.getBody(),
