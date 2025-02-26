@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Submersible Probe Control API
+  title: Submersible ProbeService Control API
   description: API for controlling a remotely operated submersible probe, including command execution, grid initialization, state management, and auditing.
   version: 1.0.0
 servers:
@@ -10,7 +10,28 @@ servers:
     description: Development server
 
 paths:
-  /probe/init:
+  
+  /v1/verify:
+    get:
+      summary: Verify API availability
+      description: Verifies that the ProbeService API is operational and reachable.
+      responses:
+        '200':
+          description: API is operational.
+        '503':
+          description: API is unavailable.
+
+  /v1/warmup:
+    get:
+      summary: Warm up probe systems
+      description: Ensures all required systems of the probe are warmed up and operational.
+      responses:
+        '200':
+          description: Systems warmed up successfully.
+        '503':
+          description: Systems are not ready, possibly due to initialization issues.
+
+  /v1/probe/init:
     post:
       summary: Initialize the grid and probe position
       description: Initialize the grid dimensions, obstacles, and the initial position and direction of the probe.
@@ -20,6 +41,7 @@ paths:
           application/json:
             schema:
               type: object
+              required: [ gridSize, obstacles, initialPosition ]
               properties:
                 gridSize:
                   type: object
@@ -38,6 +60,7 @@ paths:
                   description: A list of obstacles, each defined by its coordinates.
                   items:
                     type: object
+                    required: [x, y]
                     properties:
                       x:
                         type: integer
@@ -70,7 +93,7 @@ paths:
         '400':
           description: Invalid input for grid, obstacles, or probe position.
 
-  /probe/status:
+  /v1/probe/status:
     get:
       summary: Get the status of the probe
       description: Retrieve the current status, position, and direction of the probe.
@@ -82,7 +105,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProbeState'
 
-  /probe/command:
+  /v1/probe/command:
     post:
       summary: Send command to the probe
       description: Send a movement or control command to the probe.
@@ -107,7 +130,7 @@ paths:
         '400':
           description: Invalid command or command failed.
 
-  /probe/audit:
+  /v1/probe/audit:
     get:
       summary: Get audit logs
       description: Retrieve a list of audit logs containing user actions and timestamped commands.

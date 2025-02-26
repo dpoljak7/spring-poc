@@ -39,7 +39,41 @@ Feature: Submersible Probe Control
       | x | y |
       | 2 | 2 |
 
+    
+  Scenario: Initialize probe via API endpoint
+    When I send a POST request to "/v1/probe/init" with the following payload:
+    
+    Then the response status code should be OK 2xx
+    And the response body should contain:
+    """
+    {
+      "message": "Probe initialized successfully",
+      "location": {
+        "x": 0,
+        "y": 0
+      },
+      "direction": "North",
+      "status": "Idle"
+    }
+    """
+    
   Scenario: Moving forward within grid boundaries
+  """
+{
+  "probe": {
+    "currentPosition": {
+      "x": 0,
+      "y": 1,
+      "direction": "North"
+    },
+    "visitedCoordinates": [
+      { "x": 0, "y": 0 },
+      { "x": 0, "y": 1 }
+    ],
+    "status": "Moved successfully"
+  }
+}
+"""
     Given the probe is initialized at (0,0) facing "North"
     When I send the command "F"
     Then the probe should be at (0,1)
