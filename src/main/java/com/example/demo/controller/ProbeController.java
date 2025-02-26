@@ -7,9 +7,16 @@ import com.example.api.model.V1ProbeCommandPostRequest;
 import com.example.api.model.V1ProbeInitPost201Response;
 import com.example.api.model.V1ProbeInitPostRequest;
 import com.example.demo.db_entity.Grid;
+import com.example.demo.db_entity.ProbeVisitedPosition;
 import com.example.demo.model.Direction;
 import com.example.demo.model.Position;
 import com.example.demo.service.ProbeService;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
@@ -63,17 +70,6 @@ public class ProbeController implements V1Api {
   }
 
   @Override
-  public ResponseEntity<List<V1ProbeAuditGet200ResponseInner>> v1ProbeAuditGet() {
-    log.info("Entering v1ProbeAuditGet");
-    ResponseEntity<List<V1ProbeAuditGet200ResponseInner>> response = V1Api.super.v1ProbeAuditGet();
-    log.info(
-        "v1ProbeAuditGet successful with response: {}, HTTP status: {}",
-        response.getBody(),
-        response.getStatusCodeValue());
-    return response;
-  }
-
-  @Override
   public ResponseEntity<Void> v1ProbeCommandPost(
       V1ProbeCommandPostRequest v1ProbeCommandPostRequest) {
     log.info("Entering v1ProbeCommandPost with request: {}", v1ProbeCommandPostRequest);
@@ -89,13 +85,58 @@ public class ProbeController implements V1Api {
   }
 
   @Override
-  public ResponseEntity<ProbeState> v1ProbeStatusGet() {
+  public ResponseEntity<ProbeState> v1ProbeStatusGet(Integer probeId) {
     log.info("Entering v1ProbeStatusGet");
-    ResponseEntity<ProbeState> response = V1Api.super.v1ProbeStatusGet();
+    ResponseEntity<ProbeState> response = V1Api.super.v1ProbeStatusGet(probeId);
     log.info(
         "v1ProbeStatusGet successful with response: {}, HTTP status: {}",
         response.getBody(),
         response.getStatusCodeValue());
     return response;
   }
+
+  @Override
+  public ResponseEntity<List<V1ProbeAuditGet200ResponseInner>> v1ProbeAuditGet(Integer probeId) {
+    log.info("Entering v1ProbeAuditGet");
+    List<ProbeVisitedPosition> visitedPositions = probeService.audit(probeId);
+    List<V1ProbeAuditGet200ResponseInner> responseList = mapToResponse(visitedPositions);
+    ResponseEntity<List<V1ProbeAuditGet200ResponseInner>> response =
+        ResponseEntity.ok(responseList);
+    log.info(
+        "v1ProbeAuditGet successful with response: {}, HTTP status: {}",
+        response.getBody(),
+        response.getStatusCodeValue());
+    return response;
+  }
+
+  private static List<V1ProbeAuditGet200ResponseInner> mapToResponse(List<ProbeVisitedPosition> visitedPositions) {
+    List<V1ProbeAuditGet200ResponseInner> responseList =
+        visitedPositions.stream()
+                        .map(
+                visitedPosition -> {
+                  V1ProbeAuditGet200ResponseInner responseInner =
+                      new V1ProbeAuditGet200ResponseInner();
+                  responseInner.setUser(visitedPosition.getUsername());
+                  responseInner.setX(visitedPosition.getXCoordinate());
+                  responseInner.setY(visitedPosition.getYCoordinate());
+                  V1ProbeAuditGet200ResponseInner.DirectionEnum directionEnum =
+                      V1ProbeAuditGet200ResponseInner.DirectionEnum.valueOf(
+                          visitedPosition.getDirection().name());
+                  responseInner.setDirection(directionEnum);
+                  responseInner.setCommand(visitedPosition.getCommandExecuted());
+
+                  OffsetDateTime timestamp = convertTime(visitedPosition.getTimestampVisited());
+                  responseInner.setTimestamp(timestamp);
+                  return responseInner;
+                })
+                        .toList();
+    return responseList;
+  }
+
+  private static OffsetDateTime convertTime(LocalDateTime localDateTime) {
+    ZoneId zoneId = ZoneId.systemDefault();
+    ZoneOffset zoneOffset = zoneId.getRules().getOffset(Instant.now());
+    return localDateTime.atOffset(zoneOffset);
+  }
+
 }

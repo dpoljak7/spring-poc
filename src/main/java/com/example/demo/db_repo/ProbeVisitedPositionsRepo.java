@@ -13,9 +13,11 @@ public interface ProbeVisitedPositionsRepo extends JpaRepository<ProbeVisitedPos
 
   @Query(
       "SELECT p FROM ProbeVisitedPosition p WHERE p.probeId = :probeId ORDER BY p.timestampVisited DESC LIMIT 1")
-  ProbeVisitedPosition findNewestByProbeId(@Param("probeId") String probeId);
+  ProbeVisitedPosition findNewestByProbeId(@Param("probeId") int probeId);
 
   List<ProbeVisitedPosition> findByProbeIdAndCommandExecuted(int probeId, String command);
+
+  List<ProbeVisitedPosition> findByProbeId(int probeId);
 
   @Query(
       "SELECT CASE WHEN COUNT(p) > 0 THEN TRUE ELSE FALSE END FROM ProbeVisitedPosition p WHERE p.xCoordinate = :xCoordinate AND p.yCoordinate = :yCoordinate AND p.direction = :direction")

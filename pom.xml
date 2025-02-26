@@ -148,6 +148,11 @@
             <version>0.2.6</version> <!-- Use the latest version -->
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.18.2</version> <!-- Ensure the version matches your Jackson version -->
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
@@ -291,35 +296,35 @@
                     <forkCount>1</forkCount> <!-- To avoid duplicate forks -->
                 </configuration>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.jacoco</groupId>-->
-<!--                <artifactId>jacoco-maven-plugin</artifactId>-->
-<!--                <version>0.8.12</version> &lt;!&ndash; Use the latest version &ndash;&gt;-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>pre-test</id>-->
-<!--                        <phase>initialize</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>prepare-agent</goal> &lt;!&ndash; This prepares the code for instrumentation &ndash;&gt;-->
-<!--                        </goals>-->
-<!--                    </execution>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.jacoco</groupId>-->
+            <!--                <artifactId>jacoco-maven-plugin</artifactId>-->
+            <!--                <version>0.8.12</version> &lt;!&ndash; Use the latest version &ndash;&gt;-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>pre-test</id>-->
+            <!--                        <phase>initialize</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>prepare-agent</goal> &lt;!&ndash; This prepares the code for instrumentation &ndash;&gt;-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
 
-<!--                    <execution>-->
-<!--                        <id>pre-integration-test</id>-->
-<!--                        <phase>pre-integration-test</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>prepare-agent</goal> &lt;!&ndash; This prepares the code for instrumentation &ndash;&gt;-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>report</id>-->
-<!--                        <phase>post-integration-test</phase> &lt;!&ndash; Generate report during the verify phase &ndash;&gt;-->
-<!--                        <goals>-->
-<!--                            <goal>report</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <!--                    <execution>-->
+            <!--                        <id>pre-integration-test</id>-->
+            <!--                        <phase>pre-integration-test</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>prepare-agent</goal> &lt;!&ndash; This prepares the code for instrumentation &ndash;&gt;-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                    <execution>-->
+            <!--                        <id>report</id>-->
+            <!--                        <phase>post-integration-test</phase> &lt;!&ndash; Generate report during the verify phase &ndash;&gt;-->
+            <!--                        <goals>-->
+            <!--                            <goal>report</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
 
         </plugins>
     </build>

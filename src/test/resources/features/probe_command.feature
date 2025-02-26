@@ -24,7 +24,7 @@ Feature: Send Commands to Probe
       "initialPosition": {
         "x": 0,
         "y": 0,
-        "direction": "North"
+        "direction": "NORTH"
       },
       "probeType": "ProbeFast"
     }
@@ -44,9 +44,9 @@ Feature: Send Commands to Probe
     Then the response status code should be OK 2xx
     And the database should contain the following positions:
       | x | y | direction |
-      | 0 | 0 | North     |
-      | 0 | 1 | North     |
-      | 0 | 2 | North     |
+      | 0 | 0 | NORTH     |
+      | 0 | 1 | NORTH     |
+      | 0 | 2 | NORTH     |
 
 
   Scenario: Send a movement command to the probe LF to go outside of the grid
@@ -61,10 +61,10 @@ Feature: Send Commands to Probe
     Then the response status code should be OK 2xx
     And the database should contain the following positions:
       | x | y | direction |
-      | 0 | 0 | North     |
+      | 0 | 0 | NORTH     |
     And the database should NOT contain the following positions:
       | x  | y | direction |
-      | -1 | 0 | West      |
+      | -1 | 0 | WEST      |
 
 
   Scenario: Send a movement command to the probe FFRFF to get to obstacle at 2,2 and avoid it
@@ -79,12 +79,12 @@ Feature: Send Commands to Probe
     Then the response status code should be OK 2xx
     And the database should contain the following positions:
       | x | y | direction |
-      | 0 | 0 | North     |
-      | 0 | 1 | North     |
-      | 0 | 2 | North     |
-      | 0 | 2 | East      |
-      | 1 | 2 | East      |
+      | 0 | 0 | NORTH     |
+      | 0 | 1 | NORTH     |
+      | 0 | 2 | NORTH     |
+      | 0 | 2 | EAST      |
+      | 1 | 2 | EAST      |
     And the database should NOT contain the following positions:
       | x | y | direction |
-      | 2 | 2 | East      |
+      | 2 | 2 | EAST      |
 

@@ -12,6 +12,7 @@ import com.example.demo.model.Position;
 import com.example.demo.model.ProbeFactory;
 import com.example.demo.model.ProbeFast;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -112,5 +113,9 @@ public class ProbeService {
       probe.setDirection(probeImpl.getCurrentDirection());
       probeRepo.save(probe);
     }
+  }
+
+  public List<ProbeVisitedPosition> audit(Integer probeId) {
+    return probeVisitedPositionsRepo.findByProbeId(probeId);
   }
 }

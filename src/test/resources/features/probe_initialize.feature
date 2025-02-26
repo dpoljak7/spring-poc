@@ -21,7 +21,7 @@ Feature: Probe initialization
       "initialPosition": {
         "x": 0,
         "y": 0,
-        "direction": "North"
+        "direction": "NORTH"
       },
       "probeType": "ProbeFast"
     }
