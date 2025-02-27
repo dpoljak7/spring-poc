@@ -152,6 +152,39 @@ paths:
         '400':
           description: Invalid command or command failed.
 
+  /v1/probe/autopilot:
+    post:
+      summary: Send destination to the probe to be navigated with autopilot
+      description: Send a movement command to be executed and navigated with autopilot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ probeId, destination ]
+              properties:
+                probeId:
+                  type: integer
+                  description: The unique identifier of the initialized probe.
+                destination:
+                  type: object
+                  properties:
+                    x:
+                      type: integer
+                      description: X-coordinate of the destination.
+                    y:
+                      type: integer
+                      description: Y-coordinate of the destination.
+      responses:
+        '200':
+          description: Probe reached destination successfully
+        '400':
+          description: Invalid destination - path does not exist.
+        '500':
+          description: Internal server error
+
+
   /v1/probe/audit:
     get:
       summary: Get audit logs

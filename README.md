@@ -1,6 +1,41 @@
-# spring-poc
+# Spring POC for REST API (OpenAPI + OAuth2) with PostgreSQL database in Docker and Github pipeline
+
+## Overview
+
+Our team uses a remotely controlled submersible probe to explore the bottom of the sea. This project provides a REST API that accepts interpreted commands from the surface to navigate the probe across a grid-based map of the ocean floor. It ensures the probe stays within bounds, avoids obstacles, and logs each coordinate visited.
 
 ## Features
+
+- **Grid Navigation:** Control the probe on a defined x/y grid.
+- **Directional Movement:** Commands to move forward, backward, and turn left/right.
+- **Boundary & Obstacle Handling:** Prevents the probe from leaving the grid and colliding with obstacles.
+- **Activity Logging:** Maintains a summary of all visited coordinates.
+- **RESTful API:** Simple endpoints for command input and status retrieval.
+
+Check `src/main/resources/openapi.yaml` for REST API specification
+
+### Autopilot feature 
+`/v1/probe/autopilot` implements BFS algorithm to find path from current probe position to any destination on the grid.
+This allows probe to avoid obstacles.
+Furthermore, if new obstacle appears on the grid (e.g. 2nd probe detected by sensors) probe is 
+retrying multiple times to update the grid to check if new obstacle has disappeared.
+
+You can find the test for this feature (runnable from IntelliJ IDEA on one click with Cucumber plugins):
+`src/test/resources/features/probe_autopilot.feature`
+
+## Requirements
+
+- A grid representing the ocean floor with defined x/y coordinates.
+- An initial starting point (x, y) and an initial direction for the probe.
+- A set of commands to control the probe:
+    - Move forwards and backwards.
+    - Turn left and right.
+    - Maintain grid boundaries.
+    - Avoid obstacles.
+- Output the final position, direction, and a summary of all visited coordinates.
+
+
+## Tools and Libraries
 
 The `spring-poc` project is built with the following key features:
 

@@ -16,8 +16,13 @@ public class ProbeSlow implements IOperationalProbe {
 
   private ProbeFast probeFast;
 
-  public ProbeSlow(Grid grid, Position position, Direction direction) {
-    probeFast = new ProbeFast(grid, position, direction);
+  public ProbeSlow(int probeId, Grid grid, Position position, Direction direction) {
+    probeFast = new ProbeFast(probeId, grid, position, direction);
+  }
+
+  @Override
+  public int getProbeId() {
+    return probeFast.getProbeId();
   }
 
   @Override

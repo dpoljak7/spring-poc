@@ -13,5 +13,4 @@ public class WaitUtil {
       throw new RuntimeException("Thread was interrupted during the wait", e);
     }
   }
-
 }

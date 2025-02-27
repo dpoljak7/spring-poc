@@ -1,6 +1,6 @@
 package com.example.demo.exception;
 
-public class CommandException extends RuntimeException{
+public class CommandException extends RuntimeException {
 
   public CommandException(String message) {
     super(message);
@@ -13,5 +13,4 @@ public class CommandException extends RuntimeException{
   public CommandException(Throwable cause) {
     super(cause);
   }
-
 }

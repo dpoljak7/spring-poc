@@ -10,14 +10,21 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ProbeFast implements IOperationalProbe {
 
+  private int probeId;
   private Grid grid;
   private Position position;
   private Direction direction;
 
-  public ProbeFast(Grid grid, Position position, Direction direction) {
+  public ProbeFast(int probeId, Grid grid, Position position, Direction direction) {
+    this.probeId = probeId;
     this.grid = grid;
     this.position = position;
     this.direction = direction;
+  }
+
+  @Override
+  public int getProbeId() {
+    return probeId;
   }
 
   @Override
@@ -67,11 +74,14 @@ public class ProbeFast implements IOperationalProbe {
       case SOUTH -> newPosition = position.calculateYMinus(step);
       case EAST -> newPosition = position.calculateXPlus(step);
       case WEST -> newPosition = position.calculateXMinus(step);
-      default -> throw new IllegalArgumentException("Unexpected direction in checkMove: " + direction);
+      default ->
+          throw new IllegalArgumentException("Unexpected direction in checkMove: " + direction);
     }
     boolean isValid = grid.isValid(newPosition);
     if (!isValid) {
-      log.debug("Probe cannot follow command. Reasons: going outside of the grid or obstacle reached, new position=" + newPosition);
+      log.debug(
+          "Probe cannot follow command. Reasons: going outside of the grid or obstacle reached, new position="
+              + newPosition);
       return null;
     }
     return newPosition;
