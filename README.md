@@ -37,7 +37,7 @@ You can find the test for this feature (runnable from IntelliJ IDEA on one click
 
 ## Tools and Libraries
 
-The `spring-poc` project is built with the following key features:
+The `spring-poc` project is built with the following tools and libraries:
 
 - **Spring MVC**: Enables the creation of RESTful APIs to expose application functionalities with robust routing and
   request handling.
@@ -60,6 +60,8 @@ The `spring-poc` project is built with the following key features:
   `docker-compose.yml` file, providing a consistent environment for local development and integration testing.
 - **GitHub Pipeline for CI/CD**: Automates builds, testing, and code quality checks through a GitHub Actions workflow,
   ensuring code reliability and maintainability.
+
+---
 
 ## Local Development
 
@@ -108,21 +110,6 @@ It also enables navigation from `.feature` files to Java code by holding `Ctrl` 
 This plugin is needed to run Cucumber tests directly from `.feature` files within IntelliJ.
 
 ---
-
-## Project Overview
-
-The `spring-poc` project is designed for experimenting with and demonstrating features of Spring technologies. It
-supports local development through the Maven wrapper (`mvnw`) and enforces a standardized code style using the Google
-style guide.
-
-### Features:
-
-- **Spring MVC**: Used for creating REST endpoints.
-- **Spring Data JPA**: Included for database management with repositories.
-- **Lombok**: Reduces boilerplate code (like getters, setters, etc.).
-- **Cucumber Testing**: Allows behavior-driven development using `.feature` files.
-
-The project maintains clean and readable code via linting and formatting tools applied during the build process.
 
 ### How to Contribute
 

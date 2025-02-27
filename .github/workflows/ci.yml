@@ -3,7 +3,6 @@ name: Build and Test
 on:
   push:
     branches:
-      - main # Run on pushes to the main branch
       - develop
   pull_request:
     branches:
