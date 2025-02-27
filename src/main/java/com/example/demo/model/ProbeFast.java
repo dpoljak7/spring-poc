@@ -21,6 +21,11 @@ public class ProbeFast implements IOperationalProbe {
   }
 
   @Override
+  public void updateGrid(Grid grid) {
+    this.grid = grid;
+  }
+
+  @Override
   public Position getCurrentPosition() {
     return position;
   }
@@ -32,37 +37,44 @@ public class ProbeFast implements IOperationalProbe {
 
   @Override
   public boolean moveForward() {
-    move(1); // positive step to move forward
-    boolean isValid = grid.isValid(position);
-    if (!isValid) {
-      log.debug(
-          "Invalid position detected, position={}. Stepping back to the previous position.",
-          position);
-      move(-1);
+    Position newPosition = calculateNewPosition(1);
+    if (newPosition == null) {
+      return false;
     }
-    return isValid;
+    move(newPosition);
+    return true;
   }
 
   @Override
   public boolean moveBackward() {
-    move(-1); // negative step to move backward
-    boolean isValid = grid.isValid(position);
-    if (!isValid) {
-      log.debug(
-          "Invalid position detected, position={}. Stepping back to the previous position.",
-          position);
-      move(+1);
+    Position newPosition = calculateNewPosition(-1);
+    if (newPosition == null) {
+      return false;
     }
-    return isValid;
+    move(newPosition);
+    return true;
   }
 
-  private void move(int step) {
+  private void move(Position position) {
+    this.position.setX(position.getX());
+    this.position.setY(position.getY());
+  }
+
+  private Position calculateNewPosition(int step) {
+    Position newPosition;
     switch (direction) {
-      case NORTH -> position.yPlus(step);
-      case SOUTH -> position.yMinus(step);
-      case EAST -> position.xPlus(step);
-      case WEST -> position.xMinus(step);
+      case NORTH -> newPosition = position.calculateYPlus(step);
+      case SOUTH -> newPosition = position.calculateYMinus(step);
+      case EAST -> newPosition = position.calculateXPlus(step);
+      case WEST -> newPosition = position.calculateXMinus(step);
+      default -> throw new IllegalArgumentException("Unexpected direction in checkMove: " + direction);
     }
+    boolean isValid = grid.isValid(newPosition);
+    if (!isValid) {
+      log.debug("Probe cannot follow command. Reasons: going outside of the grid or obstacle reached, new position=" + newPosition);
+      return null;
+    }
+    return newPosition;
   }
 
   @Override

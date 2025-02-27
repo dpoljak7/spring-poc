@@ -24,4 +24,20 @@ public class Position {
   public void yMinus(int step) {
     this.y -= step;
   }
+
+  public Position calculateXPlus(int step) {
+    return new Position(this.x + step, this.y);
+  }
+
+  public Position calculateXMinus(int step) {
+    return new Position(this.x - step, this.y);
+  }
+
+  public Position calculateYPlus(int step) {
+    return new Position(this.x, this.y + step);
+  }
+
+  public Position calculateYMinus(int step) {
+    return new Position(this.x, this.y - step);
+  }
 }

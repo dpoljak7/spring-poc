@@ -20,6 +20,11 @@ public class ProbeSlow implements IOperationalProbe {
     probeFast = new ProbeFast(grid, position, direction);
   }
 
+  @Override
+  public void updateGrid(Grid grid) {
+    probeFast.updateGrid(grid);
+  }
+
   private void waitForMove() {
     try {
       Thread.sleep(moveTimeSec * 1000L);

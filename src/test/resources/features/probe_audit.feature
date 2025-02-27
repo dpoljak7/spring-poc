@@ -34,7 +34,7 @@ Feature: Audit API Testing
       """
     {
       "probeId": "${PROBE_ID}",
-      "command": "FFRFF"
+      "command": "FFRF"
     }
     """
     And I send a POST request to "/v1/probe/command" with payloadKey="PAYLOAD_KEY"
@@ -46,9 +46,6 @@ Feature: Audit API Testing
       | 0 | 2 | NORTH     |
       | 0 | 2 | EAST      |
       | 1 | 2 | EAST      |
-    And the database should NOT contain the following positions:
-      | x | y | direction |
-      | 2 | 2 | EAST      |
     When I send a GET request to "/v1/probe/audit" with query params:
       | Query param | Value       |
       | probeId     | ${PROBE_ID} |

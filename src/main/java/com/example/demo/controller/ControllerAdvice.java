@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.exception.CommandException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,5 +16,13 @@ public class ControllerAdvice {
     log.error("An exception occurred: ", ex);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body("An unexpected error occurred. Please try again later.");
+  }
+
+
+  @ExceptionHandler(CommandException.class)
+  public ResponseEntity<String> handleCommandException(Exception ex) {
+    log.error("An exception occurred: ", ex);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                         .body("An unexpected error occurred. Please try again later.");
   }
 }

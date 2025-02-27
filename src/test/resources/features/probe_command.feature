@@ -49,7 +49,7 @@ Feature: Send Commands to Probe
       | 0 | 2 | NORTH     |
 
 
-  Scenario: Send a movement command to the probe LF to go outside of the grid
+  Scenario: Send a movement command to the probe LF to go outside of the grid which causes Client Error 4xx
     Given a payload with payloadKey="PAYLOAD_KEY" enriched with valueKey="PROBE_ID"
       """
     {
@@ -58,7 +58,7 @@ Feature: Send Commands to Probe
     }
     """
     When I send a POST request to "/v1/probe/command" with payloadKey="PAYLOAD_KEY"
-    Then the response status code should be OK 2xx
+    Then the response status code should be Client Error 4xx
     And the database should contain the following positions:
       | x | y | direction |
       | 0 | 0 | NORTH     |
@@ -67,7 +67,7 @@ Feature: Send Commands to Probe
       | -1 | 0 | WEST      |
 
 
-  Scenario: Send a movement command to the probe FFRFF to get to obstacle at 2,2 and avoid it
+  Scenario: Send a movement command to the probe FFRFF to get to obstacle at 2,2 and which causes Client Error 4xx
     Given a payload with payloadKey="PAYLOAD_KEY" enriched with valueKey="PROBE_ID"
       """
     {
@@ -76,7 +76,7 @@ Feature: Send Commands to Probe
     }
     """
     When I send a POST request to "/v1/probe/command" with payloadKey="PAYLOAD_KEY"
-    Then the response status code should be OK 2xx
+    Then the response status code should be Client Error 4xx
     And the database should contain the following positions:
       | x | y | direction |
       | 0 | 0 | NORTH     |

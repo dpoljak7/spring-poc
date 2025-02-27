@@ -19,9 +19,16 @@ public class AppStatusSteps extends CommonSteps {
   }
 
   @Then("the response status code should be OK 2xx")
-  public void the_response_status_code_should_be() throws Exception {
+  public void the_response_status_code_should_be_2xx() throws Exception {
     ResultActions result =
         ScenarioContext.getValue(ScenarioKeys.MOCK_MVC_RESPONSE, ResultActions.class);
     result.andExpect(status().is2xxSuccessful()).andDo(print());
+  }
+
+  @Then("the response status code should be Client Error 4xx")
+  public void the_response_status_code_should_be_4xx() throws Exception {
+    ResultActions result =
+      ScenarioContext.getValue(ScenarioKeys.MOCK_MVC_RESPONSE, ResultActions.class);
+    result.andExpect(status().is4xxClientError()).andDo(print());
   }
 }
