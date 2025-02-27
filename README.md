@@ -1,5 +1,31 @@
 # spring-poc
 
+## Features
+
+The `spring-poc` project is built with the following key features:
+
+- **Spring MVC**: Enables the creation of RESTful APIs to expose application functionalities with robust routing and
+  request handling.
+- **Spring Data JPA**: Simplifies database interactions through repositories, offering CRUD operations and advanced
+  query capabilities.
+- **Lombok**: Minimizes boilerplate code by generating essential methods like getters, setters, builders, etc.
+- **Liquibase**: Manages database schema migrations with version control, ensuring consistent database structure and
+  easy updates.
+- **OAuth2 Authentication**: Protects API endpoints using secure, token-based OAuth2 authentication.
+- **Exception Handling with Controller Advice**: Centralized handling for application exceptions, ensuring consistent
+  logging and error responses.
+- **OpenAPI Specification**: Includes an `openapi.yaml` file to describe the REST API, enabling code generation and
+  documentation.
+- **Google Java Code Style**: Enforces a standardized code style, ensuring clean and maintainable code throughout the
+  project.
+- **Cucumber Testing**: Integrates Behavior-Driven Development (BDD) using human-readable scenarios in `.feature` files
+  to ensure application functionality correctness.
+- **Mockito for Unit Testing**: Used for mocking dependencies in unit tests and verifying expected behaviors.
+- **Docker Compose Configuration**: Simplifies setup and testing of dependent services (e.g., PostgreSQL database) through a
+  `docker-compose.yml` file, providing a consistent environment for local development and integration testing.
+- **GitHub Pipeline for CI/CD**: Automates builds, testing, and code quality checks through a GitHub Actions workflow,
+  ensuring code reliability and maintainability.
+
 ## Local Development
 
 ### First run
@@ -112,3 +138,6 @@ Spotless (code formatting check) will automatically run as part of the build pro
 - [Cucumber Documentation](https://cucumber.io/docs/)
 
 ---
+
+
+
