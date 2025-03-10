@@ -10,7 +10,6 @@ servers:
     description: Development server
 
 paths:
-  
   /v1/verify:
     get:
       summary: Verify API availability
@@ -20,6 +19,7 @@ paths:
           description: API is operational.
         '503':
           description: API is unavailable.
+      security: [ ] # Public endpoint, no security required
 
   /v1/warmup:
     get:
@@ -30,6 +30,7 @@ paths:
           description: Systems warmed up successfully.
         '503':
           description: Systems are not ready, possibly due to initialization issues.
+      security: [ ] # Public endpoint, no security required
 
   /v1/probe/init:
     post:
@@ -107,14 +108,18 @@ paths:
                   probeId: 123
         '400':
           description: Invalid input for grid, obstacles, or probe position.
+      security:
+        - bearerAuth:
+            - admin # Requires admin access
 
-  /v1/probe/status:
+
+  /v1/probe/{probeId}/status:
     get:
       summary: Get the status of the probe
       description: Retrieve the current status, position, and direction of the probe.
       parameters:
         - name: probeId
-          in: query
+          in: path
           required: true
           schema:
             type: integer
@@ -126,22 +131,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProbeState'
+      security:
+        - bearerAuth:
+            - user # Requires admin access
 
-  /v1/probe/command:
+
+  /v1/probe/{probeId}/command:
     post:
       summary: Send command to the probe
       description: Send a movement or control command to the probe.
+      parameters:
+        - name: probeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The unique identifier of the probe for which to retrieve probe status.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [ probeId, command ]
+              required: [ command ]
               properties:
-                probeId:
-                  type: integer
-                  description: The unique identifier of the initialized probe.
                 command:
                   type: string
                   description: Command to execute, e.g., "F", "L", "R", "B", or a sequence.
@@ -151,22 +164,29 @@ paths:
           description: Command executed successfully.
         '400':
           description: Invalid command or command failed.
+      security:
+        - bearerAuth:
+            - admin # Requires admin access
 
-  /v1/probe/autopilot:
+  /v1/probe/{probeId}/autopilot:
     post:
       summary: Send destination to the probe to be navigated with autopilot
       description: Send a movement command to be executed and navigated with autopilot
+      parameters:
+        - name: probeId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The unique identifier of the probe for which to retrieve probe status.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [ probeId, destination ]
+              required: [ destination ]
               properties:
-                probeId:
-                  type: integer
-                  description: The unique identifier of the initialized probe.
                 destination:
                   type: object
                   properties:
@@ -183,15 +203,19 @@ paths:
           description: Invalid destination - path does not exist.
         '500':
           description: Internal server error
+      security:
+        - bearerAuth:
+            - admin # Requires admin access
 
 
-  /v1/probe/audit:
+
+  /v1/probe/{probeId}/audit:
     get:
       summary: Get audit logs
       description: Retrieve a list of audit logs containing user actions and timestamped commands.
       parameters:
         - name: probeId
-          in: query
+          in: path
           required: true
           schema:
             type: integer
@@ -223,13 +247,17 @@ paths:
                     direction:
                       type: string
                       enum: [ NORTH, EAST, SOUTH, WEST ]
+      security:
+        - bearerAuth:
+            - user # Requires admin access
+
 components:
   schemas:
     ProbeState:
       type: object
       properties:
         id:
-          type: string
+          type: integer
           description: Unique identifier of the probe.
         location:
           type: object
@@ -244,8 +272,13 @@ components:
           type: string
           enum: [NORTH, EAST, SOUTH, WEST]
       example:
-        id: "probe-123"
+        id: 123
         location:
           x: 0
           y: 0
         direction: "NORTH"
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

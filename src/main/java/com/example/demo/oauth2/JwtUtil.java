@@ -7,6 +7,9 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,13 +24,21 @@ public class JwtUtil {
     return Keys.hmacShaKeyFor(keyBytes);
   }
 
-  public String generateToken(String username) {
+  public String generateAdminToken(String username) {
+    return generateToken(username, List.of("ROLE_ADMIN"));
+  }
+
+  public String generateToken(String username, List<String> roles) {
+    Map<String, Object> claims = new HashMap<>();
+    claims.put("roles", roles); // Add roles as a custom JWT claim
+    claims.put("sub", username);
+
     return Jwts.builder()
-        .setSubject(username)
-        .setIssuedAt(new Date(System.currentTimeMillis()))
-        .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour
-        .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-        .compact();
+               .setClaims(claims)
+               .setIssuedAt(new Date(System.currentTimeMillis()))
+               .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour
+               .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+               .compact();
   }
 
   public String extractUsername(String token) {
@@ -39,7 +50,7 @@ public class JwtUtil {
     return claimsResolver.apply(claims);
   }
 
-  private Claims extractAllClaims(String token) {
+  public Claims extractAllClaims(String token) {
     return Jwts.parserBuilder()
         .setSigningKey(getSigningKey())
         .build()
