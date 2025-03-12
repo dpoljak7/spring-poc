@@ -1,4 +1,4 @@
-# Spring POC for REST API (OpenAPI + OAuth2) with PostgreSQL database in Docker and Github pipeline
+# Autonomous Probe Navigation REST API: Spring POC with OpenAPI + OAuth2 Security + PostgreSQL database
 
 ## Overview
 
@@ -15,7 +15,7 @@ Our team uses a remotely controlled submersible probe to explore the bottom of t
 Check `src/main/resources/openapi.yaml` for REST API specification
 
 ### Autopilot feature 
-`/v1/probe/autopilot` implements BFS algorithm to find path from current probe position to any destination on the grid.
+`/v1/probe/{probeId}/autopilot` implements BFS algorithm to find path from current probe position to any destination on the grid.
 This allows probe to avoid obstacles.
 Furthermore, if new obstacle appears on the grid (e.g. 2nd probe detected by sensors) probe is 
 retrying multiple times to update the grid to check if new obstacle has disappeared.
@@ -60,6 +60,8 @@ The `spring-poc` project is built with the following tools and libraries:
   `docker-compose.yml` file, providing a consistent environment for local development and integration testing.
 - **GitHub Pipeline for CI/CD**: Automates builds, testing, and code quality checks through a GitHub Actions workflow,
   ensuring code reliability and maintainability.
+- **Jacoco**: Provides detailed code coverage reports during testing to ensure the implemented functionality is 
+- well-tested and aligned with project requirements.
 
 ---
 
