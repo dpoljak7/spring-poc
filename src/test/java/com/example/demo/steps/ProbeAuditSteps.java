@@ -1,6 +1,6 @@
 package com.example.demo.steps;
 
-import com.example.api.model.V1ProbeProbeIdAuditGet200ResponseInner;
+import com.example.api.model.generated.V1ProbeProbeIdAuditGet200ResponseInner;
 import com.example.demo.utils.ScenarioContext;
 import com.example.demo.utils.ScenarioKeys;
 import com.fasterxml.jackson.core.type.TypeReference;

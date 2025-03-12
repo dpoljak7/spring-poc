@@ -1,13 +1,13 @@
 package com.example.demo.controller;
 
-import com.example.api.controller.V1Api;
-import com.example.api.model.ProbeState;
-import com.example.api.model.V1ProbeInitPost201Response;
-import com.example.api.model.V1ProbeInitPostRequest;
-import com.example.api.model.V1ProbeProbeIdAuditGet200ResponseInner;
-import com.example.api.model.V1ProbeProbeIdAutopilotPostRequest;
-import com.example.api.model.V1ProbeProbeIdAutopilotPostRequestDestination;
-import com.example.api.model.V1ProbeProbeIdCommandPostRequest;
+import com.example.api.controller.generated.V1Api;
+import com.example.api.model.generated.ProbeState;
+import com.example.api.model.generated.V1ProbeInitPost201Response;
+import com.example.api.model.generated.V1ProbeInitPostRequest;
+import com.example.api.model.generated.V1ProbeProbeIdAuditGet200ResponseInner;
+import com.example.api.model.generated.V1ProbeProbeIdAutopilotPostRequest;
+import com.example.api.model.generated.V1ProbeProbeIdAutopilotPostRequestDestination;
+import com.example.api.model.generated.V1ProbeProbeIdCommandPostRequest;
 import com.example.demo.db_entity.Grid;
 import com.example.demo.db_entity.ProbeVisitedPosition;
 import com.example.demo.model.Direction;

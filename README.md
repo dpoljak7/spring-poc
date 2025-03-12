@@ -161,5 +161,8 @@ Spotless (code formatting check) will automatically run as part of the build pro
 
 ---
 
+## Test Code Coverage - Jacoco Maven plugin
+
+![JaCoCo Test Code Coverage](doc/jacoco-test-code-coverage.png)
 
 
