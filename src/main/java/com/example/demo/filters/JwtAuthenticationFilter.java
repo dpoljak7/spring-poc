@@ -6,6 +6,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,10 +19,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -47,9 +46,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       if (jwtUtil.isTokenValid(token, username)) {
 
         List<String> roles = claims.get("roles", List.class);
-        List<GrantedAuthority> authorities = roles.stream()
-                                                  .map(SimpleGrantedAuthority::new)
-                                                  .collect(Collectors.toList());
+        List<GrantedAuthority> authorities =
+            roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
         UserDetails userDetails = new User(username, "", authorities);
         UsernamePasswordAuthenticationToken authToken =

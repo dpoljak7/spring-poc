@@ -12,7 +12,5 @@ import org.springframework.test.context.ContextConfiguration;
 @SpringBootTest
 @CucumberContextConfiguration
 @AutoConfigureMockMvc
-@ContextConfiguration(classes = { DemoApplication.class, TestConfig.class}) //
-public class CucumberEntryPointIT {
-
-}
+@ContextConfiguration(classes = {DemoApplication.class, TestConfig.class}) //
+public class CucumberEntryPointIT {}

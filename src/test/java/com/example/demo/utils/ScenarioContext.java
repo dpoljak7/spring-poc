@@ -20,13 +20,13 @@ public class ScenarioContext {
   private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\$\\{([^}]+)\\}");
 
   /**
-   * Replaces all placeholders in the given string with their corresponding values from ScenarioContext.
+   * Replaces all placeholders in the given string with their corresponding values from
+   * ScenarioContext.
    *
    * @param input the string containing placeholders in the format ${VAR}
    * @return a string with all placeholders replaced by values from ScenarioContext
    * @throws IllegalArgumentException if a placeholder cannot be resolved in ScenarioContext
    */
-
   public static String insertValueFromScenarioContext(String input) {
     // Use a StringBuffer to build the result while replacing placeholders.
     StringBuffer result = new StringBuffer();
@@ -42,7 +42,8 @@ public class ScenarioContext {
       Object replacementValue = ScenarioContext.getValue(variableName, Object.class);
 
       if (replacementValue == null) {
-        throw new IllegalArgumentException("No value found in ScenarioContext for placeholder: " + variableName);
+        throw new IllegalArgumentException(
+            "No value found in ScenarioContext for placeholder: " + variableName);
       }
 
       // Replace the placeholder ${VAR} with the actual value
@@ -54,5 +55,4 @@ public class ScenarioContext {
 
     return result.toString();
   }
-
 }

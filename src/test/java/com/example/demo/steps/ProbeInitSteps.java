@@ -2,6 +2,8 @@ package com.example.demo.steps;
 
 // import com.example.service.ProbeService;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
 import com.example.demo.db_entity.ProbeVisitedPosition;
 import com.example.demo.utils.ScenarioContext;
 import com.example.demo.utils.ScenarioKeys;
@@ -9,13 +11,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.List;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 public class ProbeInitSteps extends CommonSteps {
 

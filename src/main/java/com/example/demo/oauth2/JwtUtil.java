@@ -34,11 +34,11 @@ public class JwtUtil {
     claims.put("sub", username);
 
     return Jwts.builder()
-               .setClaims(claims)
-               .setIssuedAt(new Date(System.currentTimeMillis()))
-               .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour
-               .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-               .compact();
+        .setClaims(claims)
+        .setIssuedAt(new Date(System.currentTimeMillis()))
+        .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour
+        .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+        .compact();
   }
 
   public String extractUsername(String token) {

@@ -1,5 +1,7 @@
 package com.example.demo.steps;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import com.example.api.model.generated.V1ProbeProbeIdAuditGet200ResponseInner;
 import com.example.demo.utils.ScenarioContext;
 import com.example.demo.utils.ScenarioKeys;
@@ -9,15 +11,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.assertj.core.api.Assertions;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import org.assertj.core.api.Assertions;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class ProbeAuditSteps extends CommonSteps {
 
@@ -31,10 +30,9 @@ public class ProbeAuditSteps extends CommonSteps {
       throws Exception {
     String oauth2Token = jwtUtil.generateAdminToken(USERNAME);
     List<Map<String, String>> paramsList = Collections.emptyList();
-    if( dataTable != null) {
+    if (dataTable != null) {
       paramsList = dataTable.asMaps(String.class, String.class);
     }
-
 
     String endpointUpdated = ScenarioContext.insertValueFromScenarioContext(endpoint);
     MockHttpServletRequestBuilder requestBuilder =
