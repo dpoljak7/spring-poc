@@ -230,7 +230,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    user:
+                    username:
                       type: string
                       description: The user who issued the command.
                     command:
