@@ -259,7 +259,7 @@ components:
         id:
           type: integer
           description: Unique identifier of the probe.
-        location:
+        position:
           type: object
           properties:
             x:
@@ -273,7 +273,7 @@ components:
           enum: [NORTH, EAST, SOUTH, WEST]
       example:
         id: 123
-        location:
+        position:
           x: 0
           y: 0
         direction: "NORTH"

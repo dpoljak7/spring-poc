@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.api.model.generated.ProbeState;
+import com.example.api.model.generated.ProbeStatePosition;
 import com.example.demo.db_entity.Grid;
 import com.example.demo.db_entity.Probe;
 import com.example.demo.db_entity.ProbeVisitedPosition;
@@ -16,6 +18,8 @@ import com.example.demo.util.WaitUtil;
 import io.micrometer.common.util.StringUtils;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -115,4 +119,15 @@ public class ProbeService {
     }
     commandService.executeCommand(probeId, commandFromAutopilot, probeImpl, grid, probe);
   }
+
+  public ProbeState getProbeState(Integer probeId) {
+    Optional<Probe> probeOptional = probeRepo.findById(probeId);
+    Probe probe = probeOptional.orElseThrow(() -> new IllegalArgumentException("Probe with ID " + probeId + " not found"));
+    ProbeState probeState = new ProbeState();
+    probeState.setId(probeId);
+    probeState.setDirection(ProbeState.DirectionEnum.valueOf(probe.getDirection().name()));
+    probeState.setPosition(new ProbeStatePosition().x(probe.getXCoordinate()).y(probe.getYCoordinate()));
+    return probeState;
+  }
+
 }

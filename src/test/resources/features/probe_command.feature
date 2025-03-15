@@ -1,7 +1,7 @@
 Feature: Send Commands to Probe
   As an API client
   I want to send movement commands to the probe
-  So that I can verify the expected positions are reflected in the database
+  so that I can verify the expected positions are reflected in the database
 
   Background:
     Given I send a POST request to "/v1/probe/init" with the following payload:

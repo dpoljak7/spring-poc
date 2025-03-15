@@ -73,9 +73,9 @@ public class ProbeController implements V1Api {
   @Override
   public ResponseEntity<ProbeState> v1ProbeProbeIdStatusGet(Integer probeId) {
     log.info("Entering v1ProbeStatusGet");
-    ResponseEntity<ProbeState> response = V1Api.super.v1ProbeProbeIdStatusGet(probeId);
+    ProbeState probeState = probeService.getProbeState(probeId);
     log.info("v1ProbeStatusGet successful with response OK");
-    return response;
+    return ResponseEntity.ok(probeState);
   }
 
   @Override

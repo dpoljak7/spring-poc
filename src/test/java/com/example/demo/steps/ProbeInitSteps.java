@@ -30,7 +30,7 @@ public class ProbeInitSteps extends CommonSteps {
     ScenarioContext.setValue(ScenarioKeys.MOCK_MVC_RESPONSE, resultActions);
   }
 
-  @Then("the response body should contain:")
+  @Then("the response body should contain: {string}")
   public void theResponseBodyShouldContain(String expectedBodyContent) throws Exception {
     ResultActions result =
         ScenarioContext.getValue(ScenarioKeys.MOCK_MVC_RESPONSE, ResultActions.class);

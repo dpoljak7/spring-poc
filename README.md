@@ -167,4 +167,45 @@ Spotless (code formatting check) will automatically run as part of the build pro
 
 ![JaCoCo Test Code Coverage](doc/jacoco-test-code-coverage.png)
 
+## Cucumber Integration Tests
+
+![Cucumber Command Integration test](doc/cucumber-command-integration-test.png)
+
+Test is written in `src/test/resources/features/probe_command.feature`.
+It is a **BDD test for the Probe API**, validating the behavior of a probe on a grid based on movement commands sent via the API.
+It is runnable in both normal, debug mode and with test coverage when clicking on green arrow. 
+
+Purpose is to ensure that commands move the probe as expected within the grid.
+
+#### **Structure of probe_command.feature file and Key Points**
+
+1. **Feature**:
+    - Describes the high-level functionality: sending movement commands to the probe and verifying database updates.
+
+2. **Background**:
+    - Prepares a shared setup for all scenarios by:
+        - Initializing the grid, obstacles, and probe position with a POST request.
+        - Extracting `probeId` for use in the scenarios.
+        - Validating the initialization response is `OK`.
+
+3. **Tested Scenarios**:
+    - **Scenario 1: Valid Command (`FFLB`)**
+        - Verifies valid commands update the database with the correct positions and directions.
+
+    - **Scenario 2: Out-of-Bounds Command (`LF`)**
+        - Ensures the probe cannot move outside the grid.
+        - Verifies that the API returns a `Client Error 4xx` and invalid positions are not stored in the database.
+
+    - **Scenario 3: Obstacle Collision (`FFRFF`)**
+        - Confirms the probe halts at obstacles, returns `Client Error 4xx`, and invalid positions (e.g., obstacle
+          coordinates) are excluded from the database.
+
+4. **Assertions**:
+    - **API responses**:
+        - Validate success responses (`2xx` for valid commands).
+        - Validate error responses (`4xx` for out-of-bounds or collision scenarios).
+
+    - **Database State**:
+        - Ensure valid positions are stored correctly.
+        - Ensure invalid positions (like out-of-bound coordinates or obstacles) are not stored.
 
