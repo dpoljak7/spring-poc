@@ -1,5 +1,6 @@
 package com.example.demo.steps;
 
+import static com.example.demo.utils.ScenarioContext.insertValueFromScenarioContext;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -19,12 +20,13 @@ public class ProbeCommandSteps extends CommonSteps {
 
   @When("I send a POST request to {string} with payloadKey={string}")
   public void sendPostRequestWithPayloadKey(String endpoint, String payloadKey) throws Exception {
-    String oauth2Token = jwtUtil.generateToken(USERNAME);
+    String oauth2Token = jwtUtil.generateAdminToken(USERNAME);
+    String endpointUpdated = insertValueFromScenarioContext(endpoint);
     String payload = ScenarioContext.getValue(payloadKey, String.class);
     ResultActions resultActions =
         mockMvc
             .perform(
-                post(endpoint)
+                post(endpointUpdated)
                     .header("Authorization", "Bearer " + oauth2Token)
                     .content(payload)
                     .contentType("application/json"))

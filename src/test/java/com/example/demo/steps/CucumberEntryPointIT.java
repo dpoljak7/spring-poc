@@ -1,15 +1,16 @@
-package com.example.demo.config;
+package com.example.demo.steps;
 
 import com.example.demo.DemoApplication;
+import com.example.demo.config.TestConfig;
 import io.cucumber.spring.CucumberContextConfiguration;
+import org.junit.platform.suite.api.Suite;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
-@CucumberContextConfiguration
+@Suite
 @SpringBootTest
-@ContextConfiguration(classes = {DemoApplication.class, TestConfig.class}) //
+@CucumberContextConfiguration
 @AutoConfigureMockMvc
-public class CucumberConfig {
-  // This class is used to hook Cucumber with Spring Boot.
-}
+@ContextConfiguration(classes = {DemoApplication.class, TestConfig.class}) //
+public class CucumberEntryPointIT {}

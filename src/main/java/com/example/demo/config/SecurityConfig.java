@@ -30,8 +30,16 @@ public class SecurityConfig {
             auth ->
                 auth.requestMatchers(unprotectedEndpoints)
                     .permitAll() // Allow without authentication
-                    .requestMatchers("/v1/probe/**")
-                    .authenticated()
+                    .requestMatchers("/v1/probe/init")
+                    .hasRole("ADMIN")
+                    .requestMatchers("/v1/probe/{probeId}/command")
+                    .hasRole("ADMIN")
+                    .requestMatchers("/v1/probe/{probeId}/autopilot")
+                    .hasRole("ADMIN")
+                    .requestMatchers("/v1/probe/{probeId}/audit")
+                    .hasAnyRole("ADMIN", "USER")
+                    .requestMatchers("/v1/probe/{probeId}/status")
+                    .hasAnyRole("ADMIN", "USER")
                     .anyRequest()
                     .authenticated()) // Require authentication for other endpoints
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

@@ -1,4 +1,4 @@
-# Spring POC for REST API (OpenAPI + OAuth2) with PostgreSQL database in Docker and Github pipeline
+# Autonomous Probe Navigation REST API: Spring POC with OpenAPI + OAuth2 Security + PostgreSQL database
 
 ## Overview
 
@@ -15,7 +15,7 @@ Our team uses a remotely controlled submersible probe to explore the bottom of t
 Check `src/main/resources/openapi.yaml` for REST API specification
 
 ### Autopilot feature 
-`/v1/probe/autopilot` implements BFS algorithm to find path from current probe position to any destination on the grid.
+`/v1/probe/{probeId}/autopilot` implements BFS algorithm to find path from current probe position to any destination on the grid.
 This allows probe to avoid obstacles.
 Furthermore, if new obstacle appears on the grid (e.g. 2nd probe detected by sensors) probe is 
 retrying multiple times to update the grid to check if new obstacle has disappeared.
@@ -60,6 +60,8 @@ The `spring-poc` project is built with the following tools and libraries:
   `docker-compose.yml` file, providing a consistent environment for local development and integration testing.
 - **GitHub Pipeline for CI/CD**: Automates builds, testing, and code quality checks through a GitHub Actions workflow,
   ensuring code reliability and maintainability.
+- **Jacoco**: Provides detailed code coverage reports during testing to ensure the implemented functionality is 
+- well-tested and aligned with project requirements.
 
 ---
 
@@ -161,5 +163,49 @@ Spotless (code formatting check) will automatically run as part of the build pro
 
 ---
 
+## Test Code Coverage - Jacoco Maven plugin
 
+![JaCoCo Test Code Coverage](doc/jacoco-test-code-coverage.png)
+
+## Cucumber Integration Tests
+
+![Cucumber Command Integration test](doc/cucumber-command-integration-test.png)
+
+Test is written in `src/test/resources/features/probe_command.feature`.
+It is a **BDD test for the Probe API**, validating the behavior of a probe on a grid based on movement commands sent via the API.
+It is runnable in both normal, debug mode and with test coverage when clicking on the green arrow (left side in the screenshot). 
+
+Purpose is to ensure that commands move the probe as expected within the grid.
+
+#### **Structure of probe_command.feature file and Key Points**
+
+1. **Feature**:
+    - Describes the high-level functionality: sending movement commands to the probe and verifying database updates.
+
+2. **Background**:
+    - Prepares a shared setup for all scenarios by:
+        - Initializing the grid, obstacles, and probe position with a POST request.
+        - Extracting `probeId` for use in the scenarios.
+        - Validating the initialization response is `OK`.
+
+3. **Tested Scenarios**:
+    - **Scenario 1: Valid Command (`FFLB`)**
+        - Verifies valid commands update the database with the correct positions and directions.
+
+    - **Scenario 2: Out-of-Bounds Command (`LF`)**
+        - Ensures the probe cannot move outside the grid.
+        - Verifies that the API returns a `Client Error 4xx` and invalid positions are not stored in the database.
+
+    - **Scenario 3: Obstacle Collision (`FFRFF`)**
+        - Confirms the probe halts at obstacles, returns `Client Error 4xx`, and invalid positions (e.g., obstacle
+          coordinates) are excluded from the database.
+
+4. **Assertions**:
+    - **API responses**:
+        - Validate success responses (`2xx` for valid commands).
+        - Validate error responses (`4xx` for out-of-bounds or collision scenarios).
+
+    - **Database State**:
+        - Ensure valid positions are stored correctly.
+        - Ensure invalid positions (like out-of-bound coordinates or obstacles) are not stored.
 

@@ -37,7 +37,7 @@ Feature: Audit API Testing
       "command": "FFRF"
     }
     """
-    And I send a POST request to "/v1/probe/command" with payloadKey="PAYLOAD_KEY"
+    And I send a POST request to "/v1/probe/${PROBE_ID}/command" with payloadKey="PAYLOAD_KEY"
     And the response status code should be OK 2xx
     And the database should contain the following positions:
       | x | y | direction |
@@ -46,9 +46,7 @@ Feature: Audit API Testing
       | 0 | 2 | NORTH     |
       | 0 | 2 | EAST      |
       | 1 | 2 | EAST      |
-    When I send a GET request to "/v1/probe/audit" with query params:
-      | Query param | Value       |
-      | probeId     | ${PROBE_ID} |
+    When I send a GET request to "/v1/probe/${PROBE_ID}/audit"
     Then the response status code should be OK 2xx
     And response should contain the following positions:
       | x | y | direction |

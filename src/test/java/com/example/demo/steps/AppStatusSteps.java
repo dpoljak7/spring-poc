@@ -14,7 +14,7 @@ public class AppStatusSteps extends CommonSteps {
 
   @When("I send a GET request to {string} no auth2")
   public void i_send_a_get_request_to(String endpoint) throws Exception {
-    ResultActions resultActions = mockMvc.perform(get("/v1/verify"));
+    ResultActions resultActions = mockMvc.perform(get(endpoint));
     ScenarioContext.setValue(ScenarioKeys.MOCK_MVC_RESPONSE, resultActions);
   }
 
