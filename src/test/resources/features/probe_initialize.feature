@@ -23,7 +23,7 @@ Feature: Probe initialization
         "y": 0,
         "direction": "NORTH"
       },
-      "probeType": "ProbeFast"
+      "probeType": "FAST"
     }
     """
     Then the response status code should be OK 2xx

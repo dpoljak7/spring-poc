@@ -1,7 +1,10 @@
 package com.example.demo.model;
 
 import com.example.demo.db_entity.Grid;
+import com.example.demo.db_entity.Probe;
+import com.example.demo.db_repo.GridRepo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -10,36 +13,28 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ProbeFast implements IOperationalProbe {
 
-  private int probeId;
-  private Grid grid;
-  private Position position;
-  private Direction direction;
+  private final Probe probe;
+  @Autowired
+  private GridRepo gridRepo;
 
-  public ProbeFast(int probeId, Grid grid, Position position, Direction direction) {
-    this.probeId = probeId;
-    this.grid = grid;
-    this.position = position;
-    this.direction = direction;
+  public ProbeFast(Probe probe) {
+    this.probe = probe;
   }
 
   @Override
-  public int getProbeId() {
-    return probeId;
+  public Probe getProbe() {
+    return probe;
   }
 
   @Override
-  public void updateGrid(Grid grid) {
-    this.grid = grid;
-  }
-
-  @Override
-  public Position getCurrentPosition() {
-    return position;
-  }
-
-  @Override
-  public Direction getCurrentDirection() {
-    return direction;
+  public void updateGridFromDatabase() {
+    Grid grid = this.probe.getGrid();
+    Grid gridUpdated =
+      gridRepo
+        .findById(grid.getId())
+        .orElseThrow(
+          () -> new IllegalStateException("Grid with ID " + grid.getId() + " not found during update"));
+    probe.setGrid(gridUpdated);
   }
 
   @Override
@@ -63,21 +58,22 @@ public class ProbeFast implements IOperationalProbe {
   }
 
   private void move(Position position) {
-    this.position.setX(position.getX());
-    this.position.setY(position.getY());
+    this.probe.setXCoordinate(position.getX());
+    this.probe.setYCoordinate(position.getY());
   }
 
   private Position calculateNewPosition(int step) {
     Position newPosition;
-    switch (direction) {
-      case NORTH -> newPosition = position.calculateYPlus(step);
-      case SOUTH -> newPosition = position.calculateYMinus(step);
-      case EAST -> newPosition = position.calculateXPlus(step);
-      case WEST -> newPosition = position.calculateXMinus(step);
+    final Position currentPosition = probe.getPosition();
+    switch (probe.getDirection()) {
+      case NORTH -> newPosition = currentPosition.calculateYPlus(step);
+      case SOUTH -> newPosition = currentPosition.calculateYMinus(step);
+      case EAST -> newPosition = currentPosition.calculateXPlus(step);
+      case WEST -> newPosition = currentPosition.calculateXMinus(step);
       default ->
-          throw new IllegalArgumentException("Unexpected direction in checkMove: " + direction);
+          throw new IllegalArgumentException("Unexpected direction in checkMove: " + probe.getDirection());
     }
-    boolean isValid = grid.isValid(newPosition);
+    boolean isValid = probe.getGrid().isValid(newPosition);
     if (!isValid) {
       log.debug(
           "Probe cannot follow command. Reasons: going outside of the grid or obstacle reached, new position="
@@ -89,11 +85,13 @@ public class ProbeFast implements IOperationalProbe {
 
   @Override
   public void turnLeft() {
-    direction = direction.left();
+    Direction currentDirection = probe.getDirection();
+    probe.setDirection(currentDirection.left());
   }
 
   @Override
   public void turnRight() {
-    direction = direction.right();
+    Direction currentDirection = probe.getDirection();
+    probe.setDirection(currentDirection.right());
   }
 }

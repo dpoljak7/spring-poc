@@ -23,7 +23,7 @@ Feature: Audit API Testing
         "y": 0,
         "direction": "NORTH"
       },
-      "probeType": "ProbeFast"
+      "probeType": "FAST"
     }
     """
     And the response status code should be OK 2xx

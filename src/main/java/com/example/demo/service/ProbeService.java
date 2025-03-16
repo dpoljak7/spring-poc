@@ -13,16 +13,15 @@ import com.example.demo.exception.AutopilotNoPathException;
 import com.example.demo.model.IOperationalProbe;
 import com.example.demo.model.Position;
 import com.example.demo.model.ProbeFactory;
-import com.example.demo.model.ProbeFast;
 import com.example.demo.util.WaitUtil;
 import io.micrometer.common.util.StringUtils;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ProbeService {
@@ -45,7 +44,7 @@ public class ProbeService {
     Grid gridSaved = gridRepo.save(probeData.getGrid());
     Probe probe =
         Probe.builder()
-            .probeType(ProbeFast.class.getSimpleName())
+            .probeType(probeData.getProbeType())
             .grid(gridSaved)
             .direction(probeData.getDirection())
             .build();
@@ -75,20 +74,9 @@ public class ProbeService {
    */
   //  @Async
   public void executeCommand(int probeId, String command) {
-    Probe probe =
-        probeRepo
-            .findById(probeId)
-            .orElseThrow(
-                () -> new IllegalArgumentException("Probe with ID " + probeId + " not found"));
 
-    int gridId = probe.getGrid().getId();
-    Grid grid =
-        gridRepo
-            .findById(gridId)
-            .orElseThrow(() -> new IllegalStateException("Grid with ID " + gridId + " not found"));
-    IOperationalProbe probeImpl = probeFactory.createProbeFast(grid, probe, probe.getDirection());
-
-    commandService.executeCommand(probeId, command, probeImpl, grid, probe);
+    IOperationalProbe probeImpl = probeFactory.createProbe(probeId);
+    commandService.executeCommand(command, probeImpl);
   }
 
   public List<ProbeVisitedPosition> audit(Integer probeId) {
@@ -96,28 +84,15 @@ public class ProbeService {
   }
 
   public void executeAutopilot(Integer probeId, Position destination) {
-    Probe probe =
-        probeRepo
-            .findById(probeId)
-            .orElseThrow(
-                () -> new IllegalArgumentException("Probe with ID " + probeId + " not found"));
+    IOperationalProbe probeImpl = probeFactory.createProbe(probeId);
 
-    int gridId = probe.getGrid().getId();
-    Grid grid =
-        gridRepo
-            .findById(gridId)
-            .orElseThrow(() -> new IllegalStateException("Grid with ID " + gridId + " not found"));
-    IOperationalProbe probeImpl = probeFactory.createProbeFast(grid, probe, probe.getDirection());
-
-    String commandFromAutopilot =
-        autopilot.createCommandsForDestination(
-            grid, probeImpl.getCurrentPosition(), probeImpl.getCurrentDirection(), destination);
+    String commandFromAutopilot = autopilot.createCommandsForDestination(probeImpl, destination);
 
     if (StringUtils.isEmpty(commandFromAutopilot)) {
       throw new AutopilotNoPathException(
           "Could not find path or probe is already at destination=" + destination);
     }
-    commandService.executeCommand(probeId, commandFromAutopilot, probeImpl, grid, probe);
+    commandService.executeCommand(commandFromAutopilot, probeImpl);
   }
 
   public ProbeState getProbeState(Integer probeId) {

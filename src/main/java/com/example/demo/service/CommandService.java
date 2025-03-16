@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.db_entity.Grid;
 import com.example.demo.db_entity.Probe;
 import com.example.demo.db_entity.ProbeVisitedPosition;
 import com.example.demo.db_repo.GridRepo;
@@ -33,7 +32,7 @@ public class CommandService {
   @Autowired WaitUtil waitUtil;
 
   public void executeCommand(
-      int probeId, String command, IOperationalProbe probeImpl, Grid grid, Probe probe) {
+      String command, IOperationalProbe probeImpl) {
     for (char cmd : command.toUpperCase().toCharArray()) {
       boolean success = false;
       for (int retries = 0; retries < probeMoveRetriesCount; retries++) {
@@ -43,7 +42,7 @@ public class CommandService {
           break; // Exit retry loop if the move was successful
         } else {
           waitUtil.wait(proveMoveRetryDelaySec);
-          updateProbeWithNewestGrid(grid, probeImpl);
+          probeImpl.updateGridFromDatabase();
         }
       }
 
@@ -57,27 +56,25 @@ public class CommandService {
                 + proveMoveRetryDelaySec);
       }
 
-      updateProbeMoveData(probeId, cmd, probeImpl, probe);
+      updateProbeMoveData(cmd, probeImpl);
     }
   }
 
-  private void updateProbeMoveData(
-      int probeId, char cmd, IOperationalProbe probeImpl, Probe probe) {
+  private void updateProbeMoveData(char cmd, IOperationalProbe probeImpl) {
+    Probe probe = probeImpl.getProbe();
     ProbeVisitedPosition visitedPosition =
         ProbeVisitedPosition.builder()
-            .probeId(probeId)
+            .probeId(probe.getId())
             .username(SecurityContextHolder.getContext().getAuthentication().getName())
-            .xCoordinate(probeImpl.getCurrentPosition().getX())
-            .yCoordinate(probeImpl.getCurrentPosition().getY())
-            .direction(probeImpl.getCurrentDirection())
+            .xCoordinate(probeImpl.getProbe().getXCoordinate())
+            .yCoordinate(probeImpl.getProbe().getYCoordinate())
+            .direction(probeImpl.getProbe().getDirection())
             .commandExecuted(String.valueOf(cmd))
             .timestampVisited(LocalDateTime.now())
             .build();
     probeVisitedPositionsRepo.save(visitedPosition);
 
-    probe.setXCoordinate(probeImpl.getCurrentPosition().getX());
-    probe.setYCoordinate(probeImpl.getCurrentPosition().getY());
-    probe.setDirection(probeImpl.getCurrentDirection());
+    //upate all probe data in database
     probeRepo.save(probe);
   }
 
@@ -102,14 +99,5 @@ public class CommandService {
         throw new IllegalArgumentException("Invalid command: " + cmd);
     }
     return success;
-  }
-
-  private void updateProbeWithNewestGrid(final Grid grid, IOperationalProbe probe) {
-    Grid gridUpdated =
-        gridRepo
-            .findById(grid.getId())
-            .orElseThrow(
-                () -> new IllegalStateException("Grid with ID " + grid.getId() + " not found"));
-    probe.updateGrid(gridUpdated);
   }
 }

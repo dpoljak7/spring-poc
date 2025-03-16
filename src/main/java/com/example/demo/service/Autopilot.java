@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.db_entity.Grid;
 import com.example.demo.model.Direction;
+import com.example.demo.model.IOperationalProbe;
 import com.example.demo.model.Position;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,7 +32,11 @@ public class Autopilot {
    * </pre>
    */
   public String createCommandsForDestination(
-      Grid grid, Position start, Direction direction, Position destination) {
+    IOperationalProbe operationalProbe, Position destination) {
+
+    Grid grid = operationalProbe.getProbe().getGrid();
+    Position start = operationalProbe.getProbe().getPosition();
+    Direction direction = operationalProbe.getProbe().getDirection();
     // First: BFS to find a valid path from start to destination.
     Queue<Position> queue = new LinkedList<>();
     Map<Position, Position> cameFrom = new HashMap<>();

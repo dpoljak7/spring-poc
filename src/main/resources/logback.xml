@@ -23,17 +23,14 @@
     <!-- Set the log level for a specific Java package -->
     <logger name="com.example.demo" level="DEBUG">
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="FILE" />
     </logger>
 
     <logger name="org.springframework" level="INFO">
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="FILE" />
     </logger>
 
     <!-- Define log levels -->
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"/>
     </root>
 </configuration>

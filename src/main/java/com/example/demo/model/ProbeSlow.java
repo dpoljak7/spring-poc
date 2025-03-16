@@ -1,7 +1,8 @@
 package com.example.demo.model;
 
-import com.example.demo.db_entity.Grid;
+import com.example.demo.db_entity.Probe;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -14,20 +15,24 @@ public class ProbeSlow implements IOperationalProbe {
   @Value("${probeSlow.moveTimeSec: 1}")
   private int moveTimeSec;
 
-  private ProbeFast probeFast;
+  @Autowired
+  private ProbeFactory probeFactory;
 
-  public ProbeSlow(int probeId, Grid grid, Position position, Direction direction) {
-    probeFast = new ProbeFast(probeId, grid, position, direction);
+  private IOperationalProbe probeFast;
+
+  public ProbeSlow(Probe probe) {
+    this.probeFast = probeFactory.createProbeFast(probe);
   }
 
   @Override
-  public int getProbeId() {
-    return probeFast.getProbeId();
+  public Probe getProbe() {
+    return probeFast.getProbe();
   }
 
+
   @Override
-  public void updateGrid(Grid grid) {
-    probeFast.updateGrid(grid);
+  public void updateGridFromDatabase() {
+    probeFast.updateGridFromDatabase();
   }
 
   private void waitForMove() {
@@ -63,13 +68,4 @@ public class ProbeSlow implements IOperationalProbe {
     return probeFast.moveBackward();
   }
 
-  @Override
-  public Position getCurrentPosition() {
-    return probeFast.getCurrentPosition();
-  }
-
-  @Override
-  public Direction getCurrentDirection() {
-    return probeFast.getCurrentDirection();
-  }
 }

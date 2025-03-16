@@ -25,7 +25,7 @@ Feature: Send Commands to Probe
         "y": 0,
         "direction": "NORTH"
       },
-      "probeType": "ProbeFast"
+      "probeType": "FAST"
     }
     """
     And the response status code should be OK 2xx

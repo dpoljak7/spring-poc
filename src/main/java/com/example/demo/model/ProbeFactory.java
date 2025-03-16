@@ -1,23 +1,36 @@
 package com.example.demo.model;
 
-import com.example.demo.db_entity.Grid;
 import com.example.demo.db_entity.Probe;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.db_repo.ProbeRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ProbeFactory {
 
-  @Autowired private ApplicationContext applicationContext;
+  private final ApplicationContext applicationContext;
+  private final ProbeRepo probeRepo;
 
-  public IOperationalProbe createProbeFast(Grid grid, Probe probe, Direction direction) {
-    Position position = new Position(probe.getXCoordinate(), probe.getYCoordinate());
-    return applicationContext.getBean(ProbeFast.class, probe.getId(), grid, position, direction);
+  public IOperationalProbe createProbeFast(Probe probe) {
+    return applicationContext.getBean(ProbeFast.class, probe);
   }
 
-  public IOperationalProbe createProbeSlow(Grid grid, Probe probe, Direction direction) {
-    Position position = new Position(probe.getXCoordinate(), probe.getYCoordinate());
-    return applicationContext.getBean(ProbeSlow.class, probe.getId(), grid, position, direction);
+  private IOperationalProbe createProbeSlow(Probe probe) {
+    return applicationContext.getBean(ProbeSlow.class, probe);
+  }
+
+  public IOperationalProbe createProbe(Integer probeId) {
+    Probe probe =
+      probeRepo
+        .findById(probeId)
+        .orElseThrow(
+          () -> new IllegalArgumentException("Probe with ID " + probeId + " not found"));
+
+    return switch (probe.getProbeType()) {
+      case FAST -> createProbeFast(probe);
+      case SLOW -> createProbeSlow(probe);
+    };
   }
 }
