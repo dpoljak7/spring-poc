@@ -52,7 +52,7 @@ jobs:
         run: mvn clean package
 
       - name: Analyze Code with SonarCloud
-        uses: SonarSource/sonarcloud-github-action@v1.11
+        uses: SonarSource/sonarcloud-github-action@v5.0.0
         with:
           args: >
             -Dsonar.projectKey=dpoljak7_spring-poc
