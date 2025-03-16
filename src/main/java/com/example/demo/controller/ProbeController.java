@@ -24,6 +24,8 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sql.DataSource;
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -36,6 +38,7 @@ public class ProbeController implements V1Api {
   private final ProbeMapper probeMapper;
   private final ProbeVisitedPositionsMapper probeVisitedPositionsMapper;
   private final ProbePositionMapper probePositionMapper;
+  private final DataSource dataSource;
 
   @Override
   public ResponseEntity<Void> v1VerifyGet() {
@@ -44,7 +47,14 @@ public class ProbeController implements V1Api {
 
   @Override
   public ResponseEntity<Void> v1WarmupGet() {
-    throw new NotImplementedException();
+    try {
+      dataSource.getConnection().close();
+      log.info("Database connection is healthy.");
+      return ResponseEntity.ok().build();
+    } catch (Exception e) {
+      log.error("Database connection failed.", e);
+      return ResponseEntity.status(500).build();
+    }
   }
 
   @Override

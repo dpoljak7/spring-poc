@@ -173,7 +173,7 @@ Spotless (code formatting check) will automatically run as part of the build pro
 
 Test is written in `src/test/resources/features/probe_command.feature`.
 It is a **BDD test for the Probe API**, validating the behavior of a probe on a grid based on movement commands sent via the API.
-It is runnable in both normal, debug mode and with test coverage when clicking on green arrow. 
+It is runnable in both normal, debug mode and with test coverage when clicking on the green arrow (left side in the screenshot). 
 
 Purpose is to ensure that commands move the probe as expected within the grid.
 
