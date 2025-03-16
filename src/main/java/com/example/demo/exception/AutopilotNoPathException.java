@@ -2,8 +2,7 @@ package com.example.demo.exception;
 
 public class AutopilotNoPathException extends RuntimeException {
 
-  public AutopilotNoPathException() {
-  }
+  public AutopilotNoPathException() {}
 
   public AutopilotNoPathException(String message) {
     super(message);
@@ -16,5 +15,4 @@ public class AutopilotNoPathException extends RuntimeException {
   public AutopilotNoPathException(Throwable cause) {
     super(cause);
   }
-
 }

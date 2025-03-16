@@ -20,7 +20,7 @@ public class ProbeInitSteps extends CommonSteps {
 
   @When("I send a POST request to {string} with the following payload:")
   public void iSendAPostRequestToWithPayload(String endpoint, String payload) throws Exception {
-    String oauth2Token = jwtUtil.generateToken(USERNAME);
+    String oauth2Token = jwtUtil.generateAdminToken(USERNAME);
     ResultActions resultActions =
         mockMvc.perform(
             post(endpoint)
@@ -30,7 +30,7 @@ public class ProbeInitSteps extends CommonSteps {
     ScenarioContext.setValue(ScenarioKeys.MOCK_MVC_RESPONSE, resultActions);
   }
 
-  @Then("the response body should contain:")
+  @Then("the response body should contain: {string}")
   public void theResponseBodyShouldContain(String expectedBodyContent) throws Exception {
     ResultActions result =
         ScenarioContext.getValue(ScenarioKeys.MOCK_MVC_RESPONSE, ResultActions.class);

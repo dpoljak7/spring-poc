@@ -66,7 +66,7 @@ Feature: Running Autopilot to navigate to destination
        }
     }
     """
-    When I send a POST request to "/v1/probe/autopilot" with payloadKey="PAYLOAD_KEY"
+    When I send a POST request to "/v1/probe/${PROBE_ID}/autopilot" with payloadKey="PAYLOAD_KEY"
     Then the response status code should be OK 2xx
     And the database should contain the following positions:
       | x | y | direction |

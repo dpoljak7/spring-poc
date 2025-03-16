@@ -16,7 +16,8 @@ public class ControllerAdvice {
   public ResponseEntity<String> handleGenericException(Exception ex) {
     log.error("An exception occurred: ", ex);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body("An unexpected error occurred. Please try again later. Exception: " + ex.getMessage());
+        .body(
+            "An unexpected error occurred. Please try again later. Exception: " + ex.getMessage());
   }
 
   @ExceptionHandler({CommandException.class, AutopilotNoPathException.class})
