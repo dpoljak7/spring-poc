@@ -49,4 +49,14 @@ jobs:
       - name: Run Maven tests
         env:
           DATABASE_URL: jdbc:postgresql://localhost:5432/test
-        run: mvn clean install
+        run: mvn clean package
+
+      - name: Analyze Code with SonarCloud
+        uses: SonarSource/sonarcloud-github-action@v1.11
+        with:
+          args: >
+            -Dsonar.projectKey=dpoljak7_spring-poc
+            -Dsonar.organization=dpoljak7_spring-poc
+            -Dsonar.java.binaries=target/classes
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
