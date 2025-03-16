@@ -51,8 +51,8 @@ jobs:
           DATABASE_URL: jdbc:postgresql://localhost:5432/test
         run: mvn clean package
 
-      - name: Analyze Code with SonarCloud
-        uses: SonarSource/sonarcloud-github-action@v5.0.0
+      - name: Analyze Code with SonarQube
+        uses: SonarSource/sonarqube-scan-action@v4.1.0
         with:
           args: >
             -Dsonar.projectKey=dpoljak7_spring-poc
