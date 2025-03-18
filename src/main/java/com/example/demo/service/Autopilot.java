@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.db_entity.Grid;
 import com.example.demo.model.Direction;
+import com.example.demo.model.IOperationalProbe;
 import com.example.demo.model.Position;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,7 +32,11 @@ public class Autopilot {
    * </pre>
    */
   public String createCommandsForDestination(
-      Grid grid, Position start, Direction direction, Position destination) {
+      IOperationalProbe operationalProbe, Position destination) {
+
+    Grid grid = operationalProbe.getProbe().getGrid();
+    Position start = operationalProbe.getProbe().getPosition();
+    Direction direction = operationalProbe.getProbe().getDirection();
     // First: BFS to find a valid path from start to destination.
     Queue<Position> queue = new LinkedList<>();
     Map<Position, Position> cameFrom = new HashMap<>();
@@ -83,47 +88,58 @@ public class Autopilot {
     for (Position nextPos : path) {
       int dx = nextPos.getX() - currentPos.getX();
       int dy = nextPos.getY() - currentPos.getY();
-
-      // Determine the desired direction for this step.
-      Direction desiredDir = null;
-      if (dx == 1 && dy == 0) {
-        desiredDir = Direction.EAST;
-      } else if (dx == -1 && dy == 0) {
-        desiredDir = Direction.WEST;
-      } else if (dy == 1 && dx == 0) {
-        desiredDir = Direction.NORTH;
-      } else if (dy == -1 && dx == 0) {
-        desiredDir = Direction.SOUTH;
-      } else {
-        // This should not happen if neighbors are chosen correctly.
-        throw new IllegalStateException("Invalid move from " + currentPos + " to " + nextPos);
-      }
-
-      // Determine the turning commands needed based on the current facing.
-      if (currentDir == desiredDir) {
-        // Already facing the right direction.
-        commands.append("F");
-      } else if (desiredDir == oppositeOf(currentDir)) {
-        // Opposite direction: use the 'B' command to move backward.
-        commands.append("B");
-      } else if (currentDir.left() == desiredDir) {
-        // Turn left then move forward.
-        commands.append("L").append("F");
-        currentDir = currentDir.left();
-      } else if (currentDir.right() == desiredDir) {
-        // Turn right then move forward.
-        commands.append("R").append("F");
-        currentDir = currentDir.right();
-      } else {
-        // Fallback (should not occur with simple cardinal moves): turn left twice.
-        commands.append("L").append("L").append("F");
-        currentDir = currentDir.left().left();
-      }
+      Direction desiredDirection = determinDesiredDirection(nextPos, dx, dy, currentPos);
+      currentDir = updateDirectionAndCommands(currentDir, desiredDirection, commands);
 
       // Update the current position.
       currentPos = nextPos;
     }
     return commands;
+  }
+
+  private Direction updateDirectionAndCommands(
+      Direction currentDir, Direction desiredDirection, StringBuilder commands) {
+    // Determine the turning commands needed based on the current facing.
+    if (currentDir == desiredDirection) {
+      // Already facing the right direction.
+      commands.append("F");
+    } else if (desiredDirection == oppositeOf(currentDir)) {
+      // Opposite direction: use the 'B' command to move backward.
+      commands.append("B");
+    } else if (currentDir.left() == desiredDirection) {
+      // Turn left then move forward.
+      commands.append("L").append("F");
+      currentDir = currentDir.left();
+    } else if (currentDir.right() == desiredDirection) {
+      // Turn right then move forward.
+      commands.append("R").append("F");
+      currentDir = currentDir.right();
+    } else {
+      throw new IllegalStateException(
+          "Invalid move from currentDirection="
+              + currentDir
+              + " to desiredDirection="
+              + desiredDirection);
+    }
+    return currentDir;
+  }
+
+  private static Direction determinDesiredDirection(
+      Position nextPos, int dx, int dy, Position currentPos) {
+    Direction desiredDir = null;
+    if (dx == 1 && dy == 0) {
+      desiredDir = Direction.EAST;
+    } else if (dx == -1 && dy == 0) {
+      desiredDir = Direction.WEST;
+    } else if (dy == 1 && dx == 0) {
+      desiredDir = Direction.NORTH;
+    } else if (dy == -1 && dx == 0) {
+      desiredDir = Direction.SOUTH;
+    } else {
+      // This should not happen if neighbors are chosen correctly.
+      throw new IllegalStateException("Invalid move from " + currentPos + " to " + nextPos);
+    }
+    return desiredDir;
   }
 
   private static boolean findPathUsingBFSAlgorithm(

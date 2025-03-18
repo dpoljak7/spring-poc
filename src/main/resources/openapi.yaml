@@ -46,9 +46,9 @@ paths:
               properties:
                 probeType:
                   type: string
-                  enum: [ ProbeFast, ProbeSlow ]
+                  enum: [ FAST, SLOW ]
                   description: The type of the probe being initialized.
-                  example: ProbeFast
+                  example: FAST
                 gridSize:
                   type: object
                   required: [width, height]

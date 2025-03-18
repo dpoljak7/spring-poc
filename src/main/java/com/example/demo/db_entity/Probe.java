@@ -1,6 +1,8 @@
 package com.example.demo.db_entity;
 
 import com.example.demo.model.Direction;
+import com.example.demo.model.Position;
+import com.example.demo.model.ProbeType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,10 +21,11 @@ public class Probe {
   @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment primary key
   private int id;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "probe_type", nullable = false)
-  private String probeType;
+  private ProbeType probeType;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne
   @JoinColumn(name = "grid_id", nullable = false, foreignKey = @ForeignKey(name = "fk_probe_grid"))
   private Grid grid; // Foreign key linking to the Grid entity
 
@@ -38,4 +41,10 @@ public class Probe {
       nullable = false,
       length = 50) // Matches the VARCHAR(50) in the SQL schema
   private Direction direction; // Uses the Direction enum
+
+  @Transient private Position position;
+
+  public Position getPosition() {
+    return new Position(xCoordinate, yCoordinate);
+  }
 }
