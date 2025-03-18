@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -24,22 +25,21 @@ public class SecurityConfig {
     JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtil);
 
     http.csrf(
-            csrf ->
-                csrf.disable()) // used for authentication which relies on cookies (session-based)
+          AbstractHttpConfigurer::disable) // used for authentication which relies on cookies (session-based)
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers(unprotectedEndpoints)
                     .permitAll() // Allow without authentication
                     .requestMatchers("/v1/probe/init")
-                    .hasRole("ADMIN")
+                    .hasRole(Roles.ADMIN.name())
                     .requestMatchers("/v1/probe/{probeId}/command")
-                    .hasRole("ADMIN")
+                    .hasRole(Roles.ADMIN.name())
                     .requestMatchers("/v1/probe/{probeId}/autopilot")
-                    .hasRole("ADMIN")
+                    .hasRole(Roles.ADMIN.name())
                     .requestMatchers("/v1/probe/{probeId}/audit")
-                    .hasAnyRole("ADMIN", "USER")
+                    .hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
                     .requestMatchers("/v1/probe/{probeId}/status")
-                    .hasAnyRole("ADMIN", "USER")
+                    .hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
                     .anyRequest()
                     .authenticated()) // Require authentication for other endpoints
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

@@ -6,7 +6,6 @@ import com.example.api.model.generated.V1ProbeInitPostRequestObstaclesInner;
 import com.example.demo.dto.ProbeData;
 import com.example.demo.model.Direction;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -33,9 +32,7 @@ public interface ProbeMapper {
 
   @Named("mapObstacles")
   static List<String> mapObstacles(List<V1ProbeInitPostRequestObstaclesInner> obstacles) {
-    return obstacles.stream()
-        .map(obstacle -> obstacle.getX() + "," + obstacle.getY())
-        .collect(Collectors.toList());
+    return obstacles.stream().map(obstacle -> obstacle.getX() + "," + obstacle.getY()).toList();
   }
 
   @Named("mapDirection")

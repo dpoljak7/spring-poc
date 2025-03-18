@@ -42,22 +42,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     Claims claims = jwtUtil.extractAllClaims(token);
     String username = claims.getSubject();
 
-    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-      if (jwtUtil.isTokenValid(token, username)) {
+    if (username != null
+        && SecurityContextHolder.getContext().getAuthentication() == null
+        && jwtUtil.isTokenValid(token, username)) {
+      List<String> roles = claims.get("roles", List.class);
+      List<GrantedAuthority> authorities =
+          roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
-        List<String> roles = claims.get("roles", List.class);
-        List<GrantedAuthority> authorities =
-            roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+      UserDetails userDetails = new User(username, "", authorities);
+      UsernamePasswordAuthenticationToken authToken =
+          new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-        UserDetails userDetails = new User(username, "", authorities);
-        UsernamePasswordAuthenticationToken authToken =
-            new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
+      authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-        SecurityContextHolder.getContext().setAuthentication(authToken);
-      }
+      SecurityContextHolder.getContext().setAuthentication(authToken);
     }
 
     log.info("OAuth2 authentication successful");

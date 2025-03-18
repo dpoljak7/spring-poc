@@ -1,10 +1,11 @@
 package com.example.demo.model;
 
-import com.example.demo.db_entity.Grid;
+import com.example.demo.db_entity.Probe;
 
 public interface IOperationalProbe {
 
-  int getProbeId();
+  /** Contains Probe data initially retrieved from database. */
+  Probe getProbe();
 
   void turnRight();
 
@@ -13,11 +14,7 @@ public interface IOperationalProbe {
   boolean moveBackward();
 
   /** Grid can be updated while Probe is operational and moving (e.g. new obstacles) */
-  void updateGrid(Grid grid);
-
-  Position getCurrentPosition();
-
-  Direction getCurrentDirection();
+  void updateGridFromDatabase();
 
   boolean moveForward();
 }

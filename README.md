@@ -35,6 +35,29 @@ You can find the test for this feature (runnable from IntelliJ IDEA on one click
 - Output the final position, direction, and a summary of all visited coordinates.
 
 
+## UML diagrams
+
+### Class Diagram: classes persisted in database
+
+![UML class diagram 1](doc/uml-class-diagram-1.png)
+
+- **Entities and Relationships**: 
+    - `Grid` table represents the 2D coordinate system, its size, and obstacles.
+    - `Probe` table logs probe-specific data and maintains a foreign key (`grid_id`) linking it to the `Grid`.
+    - `ProbeVisitedLocation` table contains data for each move a probe made and by whose instruction (username from OAuth2)
+
+### Class Diagram: Probes and Their Types
+
+![UML class diagram 2](doc/uml-class-diagram-2.png)
+
+This diagram shows different types of probes and their methods in the navigation domain. Below is a description
+of each class and their purpose.
+
+#### **Probes**
+
+- **ProbeFast**: class that models probe that moves instantly 
+- **ProbeSlow**: class that models probe that takes certain amount of seconds to move or turn (more realistic one) 
+
 ## Tools and Libraries
 
 The `spring-poc` project is built with the following tools and libraries:
@@ -62,6 +85,8 @@ The `spring-poc` project is built with the following tools and libraries:
   ensuring code reliability and maintainability.
 - **Jacoco**: Provides detailed code coverage reports during testing to ensure the implemented functionality is 
 - well-tested and aligned with project requirements.
+- **SonarQube**: Tracks code quality and ensures adherence to coding standards by detecting bugs, vulnerabilities, and
+  code smells.
 
 ---
 

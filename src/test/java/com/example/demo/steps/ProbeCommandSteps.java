@@ -35,8 +35,7 @@ public class ProbeCommandSteps extends CommonSteps {
   }
 
   @Given("a payload with payloadKey={string} enriched with valueKey={string}")
-  public void createPayloadWithPlaceholders(String payloadKey, String valueKey, String rawPayload)
-      throws Exception {
+  public void createPayloadWithPlaceholders(String payloadKey, String valueKey, String rawPayload) {
     // Replace placeholders in the raw payload
     String enrichedPayload = rawPayload;
     Object keyValue = ScenarioContext.getValue(valueKey, Object.class);

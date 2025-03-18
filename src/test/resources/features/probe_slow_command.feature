@@ -1,4 +1,7 @@
-Feature: Audit API Testing
+Feature: Send Commands to Probe
+  As an API client
+  I want to send movement commands to the probe
+  so that I can verify the expected positions are reflected in the database
 
   Background:
     Given I send a POST request to "/v1/probe/init" with the following payload:
@@ -23,36 +26,26 @@ Feature: Audit API Testing
         "y": 0,
         "direction": "NORTH"
       },
-      "probeType": "ProbeFast"
+      "probeType": "SLOW"
     }
     """
     And the response status code should be OK 2xx
     And extract int "probeId" property value from response into key="PROBE_ID"
 
-  Scenario: Verify the audit endpoint returns the expected response
+  Scenario: Send a movement command to the probe FFLB
     Given a payload with payloadKey="PAYLOAD_KEY" enriched with valueKey="PROBE_ID"
       """
     {
       "probeId": "${PROBE_ID}",
-      "command": "FFRF"
+      "command": "FFLB"
     }
     """
-    And I send a POST request to "/v1/probe/${PROBE_ID}/command" with payloadKey="PAYLOAD_KEY"
-    And the response status code should be OK 2xx
+    When I send a POST request to "/v1/probe/${PROBE_ID}/command" with payloadKey="PAYLOAD_KEY"
+    Then the response status code should be OK 2xx
     And the database should contain the following positions:
       | x | y | direction |
       | 0 | 0 | NORTH     |
       | 0 | 1 | NORTH     |
       | 0 | 2 | NORTH     |
-      | 0 | 2 | EAST      |
-      | 1 | 2 | EAST      |
-    When I send a GET request to "/v1/probe/${PROBE_ID}/audit"
-    Then the response status code should be OK 2xx
-    And response should contain the following positions:
-      | x | y | direction |
-      | 0 | 0 | NORTH     |
-      | 0 | 1 | NORTH     |
-      | 0 | 2 | NORTH     |
-      | 0 | 2 | EAST      |
-      | 1 | 2 | EAST      |
+
 

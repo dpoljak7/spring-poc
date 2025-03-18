@@ -5,7 +5,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,10 +41,5 @@ public class SyncService {
         lock.unlock();
       }
     }
-  }
-
-  private ResponseEntity<Void> synchronizeProbeCommandExecution(int probeId, String command) {
-
-    return null;
   }
 }

@@ -30,6 +30,11 @@
         <java.version>17</java.version>
         <cucumber.version>7.21.1</cucumber.version>
         <mapstruct.version>1.6.3</mapstruct.version>
+
+        <sonar.organization>dpoljak7</sonar.organization>
+        <sonar.projectKey>dpoljak7_spring-poc</sonar.projectKey>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
     <dependencies>
         <dependency>
@@ -334,7 +339,11 @@
                     </includes>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>4.0.0.4121</version>
+            </plugin>
         </plugins>
     </build>
 </project>
