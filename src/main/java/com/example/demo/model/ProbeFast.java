@@ -4,7 +4,6 @@ import com.example.demo.db_entity.Grid;
 import com.example.demo.db_entity.Probe;
 import com.example.demo.db_repo.GridRepo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +13,11 @@ import org.springframework.stereotype.Component;
 public class ProbeFast implements IOperationalProbe {
 
   private final Probe probe;
-  @Autowired
-  private GridRepo gridRepo;
+  private final GridRepo gridRepo;
 
-  public ProbeFast(Probe probe) {
+  public ProbeFast(Probe probe, GridRepo gridRepo) {
     this.probe = probe;
+    this.gridRepo = gridRepo;
   }
 
   @Override
@@ -30,10 +29,12 @@ public class ProbeFast implements IOperationalProbe {
   public void updateGridFromDatabase() {
     Grid grid = this.probe.getGrid();
     Grid gridUpdated =
-      gridRepo
-        .findById(grid.getId())
-        .orElseThrow(
-          () -> new IllegalStateException("Grid with ID " + grid.getId() + " not found during update"));
+        gridRepo
+            .findById(grid.getId())
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
+                        "Grid with ID " + grid.getId() + " not found during update"));
     probe.setGrid(gridUpdated);
   }
 
@@ -71,7 +72,8 @@ public class ProbeFast implements IOperationalProbe {
       case EAST -> newPosition = currentPosition.calculateXPlus(step);
       case WEST -> newPosition = currentPosition.calculateXMinus(step);
       default ->
-          throw new IllegalArgumentException("Unexpected direction in checkMove: " + probe.getDirection());
+          throw new IllegalArgumentException(
+              "Unexpected direction in checkMove: " + probe.getDirection());
     }
     boolean isValid = probe.getGrid().isValid(newPosition);
     if (!isValid) {

@@ -42,9 +42,7 @@ public class Probe {
       length = 50) // Matches the VARCHAR(50) in the SQL schema
   private Direction direction; // Uses the Direction enum
 
-
-  @Transient
-  private Position position;
+  @Transient private Position position;
 
   public Position getPosition() {
     return new Position(xCoordinate, yCoordinate);

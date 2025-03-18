@@ -13,32 +13,29 @@ import com.example.demo.exception.AutopilotNoPathException;
 import com.example.demo.model.IOperationalProbe;
 import com.example.demo.model.Position;
 import com.example.demo.model.ProbeFactory;
-import com.example.demo.util.WaitUtil;
 import io.micrometer.common.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ProbeService {
 
-  @Autowired private ProbeFactory probeFactory;
+  private final ProbeFactory probeFactory;
 
-  @Autowired private ProbeVisitedPositionsRepo probeVisitedPositionsRepo;
+  private final ProbeVisitedPositionsRepo probeVisitedPositionsRepo;
 
-  @Autowired private ProbeRepo probeRepo;
+  private final ProbeRepo probeRepo;
 
-  @Autowired private GridRepo gridRepo;
+  private final GridRepo gridRepo;
 
-  @Autowired private WaitUtil waitUtil;
+  private final Autopilot autopilot;
 
-  @Autowired private Autopilot autopilot;
-
-  @Autowired private CommandService commandService;
+  private final CommandService commandService;
 
   public int initialize(ProbeData probeData) {
     Grid gridSaved = gridRepo.save(probeData.getGrid());
@@ -97,12 +94,14 @@ public class ProbeService {
 
   public ProbeState getProbeState(Integer probeId) {
     Optional<Probe> probeOptional = probeRepo.findById(probeId);
-    Probe probe = probeOptional.orElseThrow(() -> new IllegalArgumentException("Probe with ID " + probeId + " not found"));
+    Probe probe =
+        probeOptional.orElseThrow(
+            () -> new IllegalArgumentException("Probe with ID " + probeId + " not found"));
     ProbeState probeState = new ProbeState();
     probeState.setId(probeId);
     probeState.setDirection(ProbeState.DirectionEnum.valueOf(probe.getDirection().name()));
-    probeState.setPosition(new ProbeStatePosition().x(probe.getXCoordinate()).y(probe.getYCoordinate()));
+    probeState.setPosition(
+        new ProbeStatePosition().x(probe.getXCoordinate()).y(probe.getYCoordinate()));
     return probeState;
   }
-
 }

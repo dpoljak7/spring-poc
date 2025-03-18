@@ -2,7 +2,6 @@ package com.example.demo.model;
 
 import com.example.demo.db_entity.Probe;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -15,20 +14,16 @@ public class ProbeSlow implements IOperationalProbe {
   @Value("${probeSlow.moveTimeSec: 1}")
   private int moveTimeSec;
 
-  @Autowired
-  private ProbeFactory probeFactory;
-
   private IOperationalProbe probeFast;
 
-  public ProbeSlow(Probe probe) {
-    this.probeFast = probeFactory.createProbeFast(probe);
+  public ProbeSlow(ProbeFast probeFast) {
+    this.probeFast = probeFast;
   }
 
   @Override
   public Probe getProbe() {
     return probeFast.getProbe();
   }
-
 
   @Override
   public void updateGridFromDatabase() {
@@ -67,5 +62,4 @@ public class ProbeSlow implements IOperationalProbe {
     waitForMove();
     return probeFast.moveBackward();
   }
-
 }

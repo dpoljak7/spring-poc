@@ -17,10 +17,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtUtil {
   @Value("${security.oauth2.jwt.secret}")
-  private String SECRET_KEY;
+  private String secretKey;
 
   private Key getSigningKey() {
-    byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+    byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     return Keys.hmacShaKeyFor(keyBytes);
   }
 

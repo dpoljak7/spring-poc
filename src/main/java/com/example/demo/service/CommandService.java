@@ -2,19 +2,19 @@ package com.example.demo.service;
 
 import com.example.demo.db_entity.Probe;
 import com.example.demo.db_entity.ProbeVisitedPosition;
-import com.example.demo.db_repo.GridRepo;
 import com.example.demo.db_repo.ProbeRepo;
 import com.example.demo.db_repo.ProbeVisitedPositionsRepo;
 import com.example.demo.exception.CommandException;
 import com.example.demo.model.IOperationalProbe;
 import com.example.demo.util.WaitUtil;
 import java.time.LocalDateTime;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CommandService {
 
   @Value("${probeMove.retriesCount}")
@@ -23,16 +23,11 @@ public class CommandService {
   @Value("${probeMove.retryDelaySec}")
   private int proveMoveRetryDelaySec;
 
-  @Autowired GridRepo gridRepo;
+  private final ProbeRepo probeRepo;
+  private final ProbeVisitedPositionsRepo probeVisitedPositionsRepo;
+  private final WaitUtil waitUtil;
 
-  @Autowired ProbeRepo probeRepo;
-
-  @Autowired ProbeVisitedPositionsRepo probeVisitedPositionsRepo;
-
-  @Autowired WaitUtil waitUtil;
-
-  public void executeCommand(
-      String command, IOperationalProbe probeImpl) {
+  public void executeCommand(String command, IOperationalProbe probeImpl) {
     for (char cmd : command.toUpperCase().toCharArray()) {
       boolean success = false;
       for (int retries = 0; retries < probeMoveRetriesCount; retries++) {
@@ -74,7 +69,7 @@ public class CommandService {
             .build();
     probeVisitedPositionsRepo.save(visitedPosition);
 
-    //upate all probe data in database
+    // upate all probe data in database
     probeRepo.save(probe);
   }
 

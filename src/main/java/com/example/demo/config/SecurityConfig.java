@@ -31,15 +31,15 @@ public class SecurityConfig {
                 auth.requestMatchers(unprotectedEndpoints)
                     .permitAll() // Allow without authentication
                     .requestMatchers("/v1/probe/init")
-                    .hasRole("ADMIN")
+                    .hasRole(Roles.ADMIN.name())
                     .requestMatchers("/v1/probe/{probeId}/command")
-                    .hasRole("ADMIN")
+                    .hasRole(Roles.ADMIN.name())
                     .requestMatchers("/v1/probe/{probeId}/autopilot")
-                    .hasRole("ADMIN")
+                    .hasRole(Roles.ADMIN.name())
                     .requestMatchers("/v1/probe/{probeId}/audit")
-                    .hasAnyRole("ADMIN", "USER")
+                    .hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
                     .requestMatchers("/v1/probe/{probeId}/status")
-                    .hasAnyRole("ADMIN", "USER")
+                    .hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
                     .anyRequest()
                     .authenticated()) // Require authentication for other endpoints
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

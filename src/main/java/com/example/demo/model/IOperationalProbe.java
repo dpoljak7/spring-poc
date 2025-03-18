@@ -4,9 +4,7 @@ import com.example.demo.db_entity.Probe;
 
 public interface IOperationalProbe {
 
-  /**
-   * Contains Probe data initially retrieved from database.
-   */
+  /** Contains Probe data initially retrieved from database. */
   Probe getProbe();
 
   void turnRight();

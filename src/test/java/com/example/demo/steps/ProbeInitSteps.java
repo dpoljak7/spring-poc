@@ -35,7 +35,7 @@ public class ProbeInitSteps extends CommonSteps {
     ResultActions result =
         ScenarioContext.getValue(ScenarioKeys.MOCK_MVC_RESPONSE, ResultActions.class);
     String response = result.andReturn().getResponse().getContentAsString();
-    Assertions.assertThat(response.contains(expectedBodyContent)).isTrue();
+    Assertions.assertThat(response).contains(expectedBodyContent);
   }
 
   @Then("database has audit log for probe stored in key={string} with command={string}")
