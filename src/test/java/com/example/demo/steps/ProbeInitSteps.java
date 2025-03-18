@@ -1,7 +1,5 @@
 package com.example.demo.steps;
 
-// import com.example.service.ProbeService;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.example.demo.db_entity.ProbeVisitedPosition;
